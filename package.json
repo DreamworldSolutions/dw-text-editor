@@ -1,0 +1,19 @@
+{
+  "name": "dw-text-editor",
+  "version": "0.1.0",
+  "description": "Very light-weight Rich Text Editor.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.dream-world.in:dw/dw-text-editor.git"
+  },
+  "author": "Nirmal Baldaniya",
+  "license": "MIT",
+  "dependencies": {
+    "lit-element": "2.2.1",
+    "@webcomponents/webcomponentsjs": "2.2.10"
+  }
+}

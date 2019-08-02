@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+
+<head>
+  <script src="../node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <title>DW Text Editor Demo</title>
+  <style>
+    .editor-container{
+      width: 320px;
+      height: 400px;
+      border: 1px solid black;
+      position: relative;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="/dw-text-editor.js" type="module"></script>
+  <h2>dw-text-editor Demo:</h2>
+  <div class="editor-container">
+    <dw-text-editor value="<h2>hello</h2>"></dw-text-editor>
+  </div>
+</body>
+
+</html>
