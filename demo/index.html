@@ -2,13 +2,14 @@
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="../node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
   <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <title>DW Text Editor Demo</title>
   <style>
     .editor-container{
-      width: 320px;
-      height: 400px;
+      width: 100%;
+      height: 500px;
       border: 1px solid black;
       position: relative;
     }
@@ -19,7 +20,7 @@
   <script src="/dw-text-editor.js" type="module"></script>
   <h2>dw-text-editor Demo:</h2>
   <div class="editor-container">
-    <dw-text-editor value="<h2>hello</h2>"></dw-text-editor>
+    <dw-text-editor value="" iframePath="../Squire/squire.html"></dw-text-editor>
   </div>
 </body>
 

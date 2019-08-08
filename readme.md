@@ -3,13 +3,19 @@
 ## Introduction
 - HTML5 rich text editor
 
-## Install
-- `npm i @dw/dw-text-editor`
+## Installation Steps
+1. `npm i @dw/dw-text-editor`
+2. Copy the contents of the `Squire/` directory onto your server.
 
 ## Usage
-
 ### Import
 - `import '@dw/dw-text-editor'`
 
 ### Use
-- `<dw-text-editor readonly value="<h2>hello world.</h2>"></dw-text-editor>`
+- Set `iFramePath` attribute  to `path/to/squire.html` (which copied in Installation Steps)
+- ```
+  <dw-text-editor 
+    iFramePath="path/to/squire.html" 
+    value="" readonly>
+  </dw-text-editor>
+  ```

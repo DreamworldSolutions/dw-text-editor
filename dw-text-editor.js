@@ -1,4 +1,14 @@
 import { LitElement, html, css } from 'lit-element';
+import {
+  boldIcon,
+  italicIcon,
+  underlineIcon,
+  orderedListIcon,
+  unorderedListIcon,
+  alignLeftIcon,
+  alignCenterIcon,
+  alignRightIcon
+} from './editor-icons';
 
 /**
  * It is a HTML5 rich text editor.
@@ -10,16 +20,9 @@ import { LitElement, html, css } from 'lit-element';
  *    Number :
  *    Bullet : 
  *    ALIGN : (left, center, right)
- *    FONT_SIZE : (h1, h2, h3, h4, h5, p)
- *    SAVE : 
- *    CANCEL : 
- * 
- * EDITOR: 
- *    Mode: view | edit
  * 
  * USAGE PATTERN: 
- *  <dw-text-editor value="<h2>Hello World.</h2>" readonly></dw-text-editor>
- * 
+ *  <dw-text-editor iFramePath="/path/to/squire.html" value="<h2>Hello World.</h2>" readonly></dw-text-editor>
  */
 class DwTextEdiror extends LitElement {
   static get styles() {
@@ -35,40 +38,73 @@ class DwTextEdiror extends LitElement {
         }
 
         #toolbar{
-          height: 48px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+
+        :host([readonly]) #toolbar{
+          display: none;
+        }
+
+        .menu-btn{
+          padding: 0px;
+          width: 32px;
+          height: 32px;
+          background: transparent;
+          box-shadow: none;
+          border: 1px solid transparent;
+          border-radius: 4px;
+          outline: none;
+          margin: 4px 4px;
+        }
+
+        .menu-btn[active], .menu-btn[active]:hover{
+          fill: #c11e5c;
+        }
+
+        .menu-btn:hover{
+          background-color: #ebebeb;
         }
 
         iframe{
           width: 100%;
-          height: calc(100% - 48px);
+          height: calc(100% - 40px);
           border: none;
           border-top: 1px solid black;
         }
+
+        :host([readonly]) iframe{
+          height: 100%;
+        }
+
       `
     ]
   }
   static get properties() {
     return {
-      
+      /**
+       * Path for `iFrame`.
+       */
+      iframePath: {
+        type: String
+      },
+
       /**
        * HTML value of editor
        */
       value: {
         type: String,
-        notify: true
-      },
-      
-      /**
-       * 
-       */
-      readonly: {
-        type: Boolean
       },
 
       /**
-       * Squire editor instance
+       * Hides/Shows toolbar & makes editor editable / non-editable. 
        */
-      _editor: { type: Object },
+      readonly: {
+        type: Boolean,
+        reflect: true
+      },
 
       /**
        * Current state of Bold menu in toolbar.
@@ -76,18 +112,18 @@ class DwTextEdiror extends LitElement {
       _isBold: {
         type: Boolean
       },
-      
+
       /**
        * Current state of Italic menu in toolbar.
        */
       _isItalic: {
         type: Boolean
       },
-      
+
       /**
        * Current state of Underline menu in toolbar.
        */
-      _isUnderline: {
+      _isUnderlined: {
         type: Boolean
       },
 
@@ -97,53 +133,105 @@ class DwTextEdiror extends LitElement {
       _isOrderedList: {
         type: Boolean
       },
-      
+
       /**
        *  Current state of Bullet menu in toolbar.
        */
       _isUnorderedList: {
         type: Boolean
       },
-      
+
       /**
        * Text alighnment of current line.
        */
       _textAlignment: {
         type: String
       },
-
-      /**
-       * Font size of selected text.
-       */
-      _fontSize: {
-        type: String
-      }
     };
-  }
-
-  constructor() {
-    super();
-    this.value = '';
   }
 
   render() {
     return html`
-      <div id="toolbar"></div>
+      <div id="toolbar">
+        <button 
+          class="menu-btn" 
+          title="Bold" 
+          ?active="${this._isBold}"
+          @click="${this._updateBold}">
+          ${boldIcon}
+        </button>
+
+        <button 
+          class="menu-btn" 
+          title="Italic" 
+          ?active="${this._isItalic}"
+          @click="${this._updateItalic}">
+          ${italicIcon}
+        </button>
+
+        <button 
+          class="menu-btn" 
+          title="Underline" 
+          ?active="${this._isUnderlined}"
+          @click="${this._updateUnderlined}">
+          ${underlineIcon}
+        </button>
+
+        <button 
+          class="menu-btn" 
+          title="Ordered List" 
+          ?active="${this._isOrderedList}"
+          @click="${this._updateOrdredList}">
+          ${orderedListIcon}
+        </button>
+
+        <button 
+          class="menu-btn" 
+          title="Unordered List" 
+          ?active="${this._isUnorderedList}"
+          @click="${this._updateUnoredredList}">
+          ${unorderedListIcon}
+        </button>
+
+        <button 
+          class="menu-btn" 
+          title="Align Left" 
+          ?active="${this._textAlignment === 'left'}"
+          @click="${_ => { this._setTextAlignment('left') }}">
+          ${alignLeftIcon}
+        </button>
+
+        <button 
+          class="menu-btn" 
+          title="Align Center" 
+          ?active="${this._textAlignment === 'center'}"
+          @click="${_ => { this._setTextAlignment('center') }}">
+          ${alignCenterIcon}
+        </button>
+
+        <button 
+          class="menu-btn" 
+          title="Align Right" 
+          ?active="${this._textAlignment === 'right'}"
+          @click="${_ => { this._setTextAlignment('right') }}">
+          ${alignRightIcon}
+        </button>
+      </div>
+
       <iframe 
         @load="${this._init}"
-        src="../Squire/document.html"></iframe>  
+        src="${this.iframePath}"></iframe>  
     `;
   }
 
-  updated() {
-    
-  }
-
-  _init() {
-    this._editor = this.shadowRoot.querySelector('iframe').contentWindow.editor;
-    this._editor.focus();
-    this._setHTML(this.value);
-    this._editor.addEventListener('pathChange', this._pathChanged)
+  updated(changedProperties) {
+    if (changedProperties.has('readonly')) {
+      if (!this.readonly) {
+        this._content.setAttribute('contenteditable', true);
+      } else {
+        this._content.removeAttribute('contenteditable');
+      }
+    }
   }
 
   /**
@@ -151,112 +239,91 @@ class DwTextEdiror extends LitElement {
    * The value supplied should not contain <body> tags or anything outside of that.
    * @param {*} html 
    */
-  _setHTML(html) {
-    this._editor._setHTML(html);
+  setHTML(html) {
+    this._editor.setHTML(html);
   }
 
   /**
    * Returns the HTML value of the editor in its current state. 
-   * This value is equivalent to the contents of the <body> tag and does not include any surrounding boilerplate.
+   * This value is equivalent to the contents of the <body> tag.
    */
-  _getHTML() {
-
+  getHTML() {
+    return this._editor.getHTML();
   }
 
-
-  /**
-   * Saves current value into Database.
-   * sets `readonly` true
-   */
-  _save() {
-
-  }
-
-  /**
-   * sets `readonly` true.
-   */
-  _cancel() {
-
-  }
-
-
-  /**
-   * Makes any non-bold currently selected text bold
-   */
-  _bold() {
-    
+  _init() {
+    if (!this.iframePath) {
+      console.warn('Plese set iFrame path to `iFramePath` attribute');
+      return;
+    }
+    const iframe = this.shadowRoot.querySelector('iframe');
+    this._editor = iframe.contentWindow.editor;
+    this._content = iframe.contentDocument.body;
+    this.setHTML(this.value);
+    this._editor.addEventListener('pathChange', this._pathChanged.bind(this))
   }
 
   /**
-   * Removes any bold formatting from the selected text.
+   * Makes selected text Bold / Unbold
    */
-  _removeBold() {
-
+  _updateBold() {
+    if (this._isBold) {
+      this._editor.removeBold();
+    } else {
+      this._editor.bold();
+    }
   }
 
   /**
-   * Removes any italic formatting from the selected text.
+   * Makes selected Text Italic / Non Italic.
    */
-  _italic() {
-
+  _updateItalic() {
+    if (this._isItalic) {
+      this._editor.removeItalic();
+    } else {
+      this._editor.italic();
+    }
   }
 
   /**
-   * Removes any italic formatting from the selected text.
+   * Makes selected text underlined / non-underlined.
    */
-  _removeItalic() {
-
+  _updateUnderlined() {
+    if (this._isUnderlined) {
+      this._editor.removeUnderline();
+    } else {
+      this._editor.underline();
+    }
   }
 
   /**
-   * Makes any non-underlined currently selected text underlined
+   * Sets or removes numbered list.
    */
-  _underline() {
-
+  _updateOrdredList() {
+    if (this._isOrderedList) {
+      this._editor.removeList();
+    } else {
+      this._editor.makeOrderedList();
+    }
   }
 
   /**
-   * Removes any underline formatting from the selected text.
+   * Sets or removes bullet list.
    */
-  _removeUnderline() {
-
+  _updateUnoredredList() {
+    if (this._isUnorderedList) {
+      this._editor.removeList();
+    } else {
+      this._editor.makeUnorderedList();
+    }
   }
 
   /**
-   * Changes all at-least-partially selected blocks to be part of an ordered list.
+   * Sets the text alignment
+   * @param {*} position ('left' | 'right' | 'center')
    */
-  _makeOrderedList() {
-
-  }
-
-  /**
-   * Changes all at-least-partially selected blocks to be part of an unordered list.
-   */
-  _makeUnorderedList() {
-
-  }
-
-  /**
-   * Changes any at-least-partially selected blocks which are part of a list to no longer be part of a list.
-   */
-  _removeList() {
-
-  }
-
- /**
-  * Sets the text alignment
-  * @param {*} position ('left' | 'right' | 'center')
-  */
   _setTextAlignment(position) {
-
-  }
-
-  /**
-   * Sets the font size for text.
-   * @param {*} size 
-   */
-  _setFontSize(size) {
-
+    this._editor.setTextAlignment(position);
   }
 
   /**
@@ -264,7 +331,47 @@ class DwTextEdiror extends LitElement {
    * @param {*} e : path change event object.
    */
   _pathChanged(e) {
-    
+    if (this._editor.hasFormat('B')) {
+      this._isBold = true;
+    } else {
+      this._isBold = false;
+    }
+
+    if (this._editor.hasFormat('I')) {
+      this._isItalic = true;
+    } else {
+      this._isItalic = false;
+    }
+
+    if (this._editor.hasFormat('U')) {
+      this._isUnderlined = true;
+    } else {
+      this._isUnderlined = false;
+    }
+
+    if (this._editor.hasFormat('OL')) {
+      this._isOrderedList = true;
+    } else {
+      this._isOrderedList = false;
+    }
+
+    if (this._editor.hasFormat('UL')) {
+      this._isUnorderedList = true;
+    } else {
+      this._isUnorderedList = false;
+    }
+
+    if (e.path.includes('.align-left')) {
+      this._textAlignment = 'left';
+    }
+
+    if (e.path.includes('.align-center')) {
+      this._textAlignment = 'center';
+    }
+
+    if (e.path.includes('.align-right')) {
+      this._textAlignment = 'right';
+    }
   }
 }
 
