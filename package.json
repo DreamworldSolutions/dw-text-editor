@@ -1,10 +1,11 @@
 {
-  "name": "dw-text-editor",
-  "version": "0.1.0",
+  "name": "@dreamworld/dw-text-editor",
+  "version": "1.0.0",
   "description": "Very light-weight Rich Text Editor.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "link-module-alias": "link-module-alias"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,12 @@
   "dependencies": {
     "lit-element": "2.2.1",
     "@webcomponents/webcomponentsjs": "2.2.10"
+  },
+  "devDependencies": {
+    "@dreamworld/material-icons": "^0.0.5",
+    "link-module-alias": "^1.2.0"
+  },
+  "_moduleAliases": {
+    "icons": "node_modules/@dreamworld/material-icons"
   }
 }

@@ -1,14 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import {
-  boldIcon,
-  italicIcon,
-  underlineIcon,
-  orderedListIcon,
-  unorderedListIcon,
-  alignLeftIcon,
-  alignCenterIcon,
-  alignRightIcon
-} from './editor-icons';
+import { getIcon } from 'icons';
 
 /**
  * It is a HTML5 rich text editor.
@@ -19,12 +10,11 @@ import {
  *    Underline :
  *    Number :
  *    Bullet : 
- *    ALIGN : (left, center, right)
  * 
  * USAGE PATTERN: 
- *  <dw-text-editor iFramePath="/path/to/squire.html" value="<h2>Hello World.</h2>" readonly></dw-text-editor>
+ *  <dw-text-editor iframePath="/path/to/squire.html" value="<h2>Hello World.</h2>" readonly></dw-text-editor>
  */
-class DwTextEdiror extends LitElement {
+class DwTextEditor extends LitElement {
   static get styles() {
     return [
       css`
@@ -140,13 +130,6 @@ class DwTextEdiror extends LitElement {
       _isUnorderedList: {
         type: Boolean
       },
-
-      /**
-       * Text alighnment of current line.
-       */
-      _textAlignment: {
-        type: String
-      },
     };
   }
 
@@ -158,7 +141,7 @@ class DwTextEdiror extends LitElement {
           title="Bold" 
           ?active="${this._isBold}"
           @click="${this._updateBold}">
-          ${boldIcon}
+          ${getIcon('editor.format_bold')}
         </button>
 
         <button 
@@ -166,7 +149,7 @@ class DwTextEdiror extends LitElement {
           title="Italic" 
           ?active="${this._isItalic}"
           @click="${this._updateItalic}">
-          ${italicIcon}
+          ${getIcon('editor.format_italic')}
         </button>
 
         <button 
@@ -174,7 +157,7 @@ class DwTextEdiror extends LitElement {
           title="Underline" 
           ?active="${this._isUnderlined}"
           @click="${this._updateUnderlined}">
-          ${underlineIcon}
+          ${getIcon('editor.format_underlined')}
         </button>
 
         <button 
@@ -182,7 +165,7 @@ class DwTextEdiror extends LitElement {
           title="Ordered List" 
           ?active="${this._isOrderedList}"
           @click="${this._updateOrdredList}">
-          ${orderedListIcon}
+          ${getIcon('editor.format_list_numbered')}
         </button>
 
         <button 
@@ -190,31 +173,7 @@ class DwTextEdiror extends LitElement {
           title="Unordered List" 
           ?active="${this._isUnorderedList}"
           @click="${this._updateUnoredredList}">
-          ${unorderedListIcon}
-        </button>
-
-        <button 
-          class="menu-btn" 
-          title="Align Left" 
-          ?active="${this._textAlignment === 'left'}"
-          @click="${_ => { this._setTextAlignment('left') }}">
-          ${alignLeftIcon}
-        </button>
-
-        <button 
-          class="menu-btn" 
-          title="Align Center" 
-          ?active="${this._textAlignment === 'center'}"
-          @click="${_ => { this._setTextAlignment('center') }}">
-          ${alignCenterIcon}
-        </button>
-
-        <button 
-          class="menu-btn" 
-          title="Align Right" 
-          ?active="${this._textAlignment === 'right'}"
-          @click="${_ => { this._setTextAlignment('right') }}">
-          ${alignRightIcon}
+          ${getIcon('editor.format_list_bulleted')}
         </button>
       </div>
 
@@ -224,13 +183,30 @@ class DwTextEdiror extends LitElement {
     `;
   }
 
+  constructor() {
+    super();
+    this.iframePath = '/squire.html';
+  }
+
   updated(changedProperties) {
     if (changedProperties.has('readonly')) {
-      if (!this.readonly) {
-        this._content.setAttribute('contenteditable', true);
-      } else {
-        this._content.removeAttribute('contenteditable');
-      }
+      this._updateReadOnly();
+    }
+  }
+
+  /**
+   * Updates `readonly` property.
+   * Sets `contenteditable` based on `readonly`.
+   */
+  _updateReadOnly() {
+    if (!this._content) {
+      return;
+    }
+
+    if (!this.readonly) {
+      this._content.setAttribute('contenteditable', true);
+    } else {
+      this._content.removeAttribute('contenteditable');
     }
   }
 
@@ -239,7 +215,7 @@ class DwTextEdiror extends LitElement {
    * The value supplied should not contain <body> tags or anything outside of that.
    * @param {*} html 
    */
-  setHTML(html) {
+  setValue(html) {
     this._editor.setHTML(html);
   }
 
@@ -247,20 +223,22 @@ class DwTextEdiror extends LitElement {
    * Returns the HTML value of the editor in its current state. 
    * This value is equivalent to the contents of the <body> tag.
    */
-  getHTML() {
-    return this._editor.getHTML();
+  getValue() {
+    return this.value = this._editor.getHTML();
   }
 
   _init() {
     if (!this.iframePath) {
-      console.warn('Plese set iFrame path to `iFramePath` attribute');
+      console.warn('Plese set iFrame path to `iframePath` attribute');
       return;
     }
     const iframe = this.shadowRoot.querySelector('iframe');
     this._editor = iframe.contentWindow.editor;
     this._content = iframe.contentDocument.body;
-    this.setHTML(this.value);
-    this._editor.addEventListener('pathChange', this._pathChanged.bind(this))
+    this._updateReadOnly();
+    this.setValue(this.value);
+    this._editor.addEventListener('pathChange', this._pathChanged.bind(this));
+    this._editor.addEventListener('input', this._dispatchValueChange.bind(this));
   }
 
   /**
@@ -319,14 +297,6 @@ class DwTextEdiror extends LitElement {
   }
 
   /**
-   * Sets the text alignment
-   * @param {*} position ('left' | 'right' | 'center')
-   */
-  _setTextAlignment(position) {
-    this._editor.setTextAlignment(position);
-  }
-
-  /**
    * Sets state of all toolbar menus
    * @param {*} e : path change event object.
    */
@@ -360,19 +330,18 @@ class DwTextEdiror extends LitElement {
     } else {
       this._isUnorderedList = false;
     }
+  }
 
-    if (e.path.includes('.align-left')) {
-      this._textAlignment = 'left';
-    }
-
-    if (e.path.includes('.align-center')) {
-      this._textAlignment = 'center';
-    }
-
-    if (e.path.includes('.align-right')) {
-      this._textAlignment = 'right';
-    }
+  /**
+   * Dispatches `value-changed` event on value change
+   */
+  _dispatchValueChange() {
+    this.dispatchEvent(new CustomEvent('value-changed', {
+      detail: {
+        value: this.getValue()
+      }
+    }));
   }
 }
 
-customElements.define('dw-text-editor', DwTextEdiror);
+customElements.define('dw-text-editor', DwTextEditor);
