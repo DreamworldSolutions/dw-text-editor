@@ -1,6 +1,6 @@
 {
   "name": "@dreamworld/dw-text-editor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A light-weight Rich Text Editor based on Squire, built as LitElement WebComponent",
   "main": "index.js",
   "scripts": {
