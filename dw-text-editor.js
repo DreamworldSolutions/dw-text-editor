@@ -19,7 +19,8 @@ class DwTextEditor extends LitElement {
     return [
       css`
         :host{
-          display: block;
+          display: flex;
+          flex-direction: column;
           position: absolute;
           top: 0;
           left: 0;
@@ -60,6 +61,9 @@ class DwTextEditor extends LitElement {
 
         iframe{
           width: 100%;
+          -webkit-flex: 1; /* Safari 6.1+ */
+          -ms-flex: 1; /* IE 10 */ 
+          flex: 1;
           height: calc(100% - 40px);
           border: none;
           border-top: 1px solid black;
