@@ -1,7 +1,7 @@
 {
   "name": "@dreamworld/dw-text-editor",
-  "version": "1.0.0",
-  "description": "Very light-weight Rich Text Editor.",
+  "version": "1.0.1",
+  "description": "A light-weight Rich Text Editor based on Squire, built as LitElement WebComponent",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@git.dream-world.in:dw/dw-text-editor.git"
+    "url": "git@github.com:DreamworldSolutions/dw-text-editor.git"
   },
   "author": "Nirmal Baldaniya",
   "license": "MIT",
