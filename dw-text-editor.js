@@ -296,6 +296,7 @@ class DwTextEditor extends LitElement {
     this._content = this._iframe.contentDocument.body;
     this._updateReadOnly();
     this.setValue(this.value);
+    this._editor.focus();
     this._content.addEventListener('click', this._dispatchBodyTapEvent.bind(this));
     this._editor.addEventListener('pathChange', this._pathChanged.bind(this));
     this._editor.addEventListener('input', this._dispatchValueChange.bind(this));

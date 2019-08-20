@@ -1,6 +1,6 @@
 {
   "name": "@dws/dw-text-editor",
-  "version": "1.1.0-SNAPSHOT-1",
+  "version": "1.1.0-SNAPSHOT-2",
   "description": "A light-weight Rich Text Editor based on Squire, built as LitElement WebComponent",
   "main": "index.js",
   "scripts": {
