@@ -4,16 +4,22 @@ import { getIcon } from 'icons';
 /**
  * It is a HTML5 rich text editor.
  * 
- * TOOLBAR : 
+ * ## TOOLBAR : 
  *    Bold : 
  *    Italic :
  *    Underline :
  *    Number :
  *    Bullet : 
  * 
- * USAGE PATTERN: 
- *  <dw-text-editor iframePath="/path/to/squire.html" value="<h2>Hello World.</h2>" readonly></dw-text-editor>
+ * ## Events
+ *  - `value-changed`: Fired with final value whenever rich text content is changed
+ *  - `height-changed`: Fired when `autoHeight` is true and rich content height is changed
+ *  - `body-tap`: Fired when user tap on iFrame body
+ * 
+ * ## USAGE PATTERN: 
+ *  <dw-text-editor iframePath="/path/to/squire.html" value="<h2>Hello World.</h2>" readonly autoHeight></dw-text-editor>
  */
+
 class DwTextEditor extends LitElement {
   static get styles() {
     return [
@@ -33,6 +39,7 @@ class DwTextEditor extends LitElement {
           flex-direction: row;
           align-items: center;
           flex-wrap: wrap;
+          border-bottom: 1px solid var(--toolbar-border-color, black);
         }
 
         :host([readonly]) #toolbar{
@@ -52,11 +59,11 @@ class DwTextEditor extends LitElement {
         }
 
         .menu-btn[active], .menu-btn[active]:hover{
-          fill: #c11e5c;
+          fill: var(--menu-btn-active-color, #c11e5c);
         }
 
         .menu-btn:hover{
-          background-color: #ebebeb;
+          background-color: var(--menu-btn-hover-color, #ebebeb);
         }
 
         iframe{
@@ -66,7 +73,6 @@ class DwTextEditor extends LitElement {
           flex: 1;
           height: calc(100% - 40px);
           border: none;
-          border-top: 1px solid black;
         }
 
         :host([readonly]) iframe{
@@ -98,6 +104,14 @@ class DwTextEditor extends LitElement {
       readonly: {
         type: Boolean,
         reflect: true
+      },
+
+      /**
+       * Set `true` to make iFrame height as its content height
+       * By default value is `false`.
+       */
+      autoHeight: {
+        type: Boolean
       },
 
       /**
@@ -189,6 +203,7 @@ class DwTextEditor extends LitElement {
 
   constructor() {
     super();
+    this.autoHeight = false;
     this.iframePath = '/squire.html';
   }
 
@@ -220,7 +235,14 @@ class DwTextEditor extends LitElement {
    * @param {*} html 
    */
   setValue(html) {
+    if(!this._editor) {
+      //Set `value` property so this value is set by default when iFrame is ready
+      this.value = html;
+      return;
+    }
+
     this._editor.setHTML(html);
+    this.refreshHeight();
   }
 
   /**
@@ -228,7 +250,40 @@ class DwTextEditor extends LitElement {
    * This value is equivalent to the contents of the <body> tag.
    */
   getValue() {
+    if(!this._editor) {
+      console.warn('Editor is not ready.');
+      return;
+    }
+
     return this.value = this._editor.getHTML();
+  }
+
+  /**
+   * If `autoHeight` is `true` then reset iframe height as content height.
+   */
+  refreshHeight() {
+    if(!this._iframe || !this._content) {
+      console.warn('Iframe is not ready');
+      return;
+    }
+
+    if(!this.autoHeight) {
+      return;
+    }
+
+    this._content.style.overflowY = 'hidden';
+
+    //Old height
+    let _oldHeight = this._iframe.style.height;
+
+    //Set iframe Height to content height
+    let _scrollHeight = this._content.scrollHeight;
+    this._iframe.style.height = _scrollHeight + 'px';
+
+    //Fire height changed event if iFrame height is changed
+    if(_oldHeight !== _scrollHeight + 'px') {
+      this._dispatchHeightChange(_scrollHeight);
+    }
   }
 
   _init() {
@@ -236,11 +291,12 @@ class DwTextEditor extends LitElement {
       console.warn('Plese set iFrame path to `iframePath` attribute');
       return;
     }
-    const iframe = this.shadowRoot.querySelector('iframe');
-    this._editor = iframe.contentWindow.editor;
-    this._content = iframe.contentDocument.body;
+    this._iframe = this.shadowRoot.querySelector('iframe');
+    this._editor = this._iframe.contentWindow.editor;
+    this._content = this._iframe.contentDocument.body;
     this._updateReadOnly();
     this.setValue(this.value);
+    this._content.addEventListener('click', this._dispatchBodyTapEvent.bind(this));
     this._editor.addEventListener('pathChange', this._pathChanged.bind(this));
     this._editor.addEventListener('input', this._dispatchValueChange.bind(this));
   }
@@ -249,6 +305,11 @@ class DwTextEditor extends LitElement {
    * Makes selected text Bold / Unbold
    */
   _updateBold() {
+    if(!this._editor) {
+      console.warn('Editor is not ready.');
+      return;
+    }
+
     if (this._isBold) {
       this._editor.removeBold();
     } else {
@@ -260,6 +321,11 @@ class DwTextEditor extends LitElement {
    * Makes selected Text Italic / Non Italic.
    */
   _updateItalic() {
+    if(!this._editor) {
+      console.warn('Editor is not ready.');
+      return;
+    }
+
     if (this._isItalic) {
       this._editor.removeItalic();
     } else {
@@ -271,6 +337,11 @@ class DwTextEditor extends LitElement {
    * Makes selected text underlined / non-underlined.
    */
   _updateUnderlined() {
+    if(!this._editor) {
+      console.warn('Editor is not ready.');
+      return;
+    }
+
     if (this._isUnderlined) {
       this._editor.removeUnderline();
     } else {
@@ -282,6 +353,11 @@ class DwTextEditor extends LitElement {
    * Sets or removes numbered list.
    */
   _updateOrdredList() {
+    if(!this._editor) {
+      console.warn('Editor is not ready.');
+      return;
+    }
+
     if (this._isOrderedList) {
       this._editor.removeList();
     } else {
@@ -293,6 +369,11 @@ class DwTextEditor extends LitElement {
    * Sets or removes bullet list.
    */
   _updateUnoredredList() {
+    if(!this._editor) {
+      console.warn('Editor is not ready.');
+      return;
+    }
+
     if (this._isUnorderedList) {
       this._editor.removeList();
     } else {
@@ -305,6 +386,11 @@ class DwTextEditor extends LitElement {
    * @param {*} e : path change event object.
    */
   _pathChanged(e) {
+    if(!this._editor) {
+      console.warn('Editor is not ready.');
+      return;
+    }
+
     if (this._editor.hasFormat('B')) {
       this._isBold = true;
     } else {
@@ -343,6 +429,28 @@ class DwTextEditor extends LitElement {
     this.dispatchEvent(new CustomEvent('value-changed', {
       detail: {
         value: this.getValue()
+      }
+    }));
+  }
+
+  /**
+   * Dispatches `height-changed` event on content height changed
+   */
+  _dispatchHeightChange(height) {
+    this.dispatchEvent(new CustomEvent('height-changed', {
+      detail: {
+        height
+      }
+    }));
+  }
+
+  /**
+   * Dispatches `body-tap` event when user tap on body
+   */
+  _dispatchBodyTapEvent(event) {
+    this.dispatchEvent(new CustomEvent('body-tap', {
+      detail: {
+        event
       }
     }));
   }

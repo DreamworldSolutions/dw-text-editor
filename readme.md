@@ -13,9 +13,14 @@
 
 ### Use
 - Set `iframePath` attribute  to `path/to/squire.html` if `squire.html` file isn't on root directory.
+- Set `autoHeight` to avoid iframe scroll. In this case iframe has same height as its content always.
+- Set `readOnly` to mark content as read only and hide toolbar action manu.
+
 - ```
   <dw-text-editor 
     iframePath="path/to/squire.html" 
-    value="" readonly>
+    value="" readonly
+    autoHeight
+    readOnly>
   </dw-text-editor>
   ```
