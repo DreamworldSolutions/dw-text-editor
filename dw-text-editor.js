@@ -13,11 +13,15 @@ import { getIcon } from 'icons';
  * 
  * ## Events
  *  - `value-changed`: Fired with final value whenever rich text content is changed
- *  - `height-changed`: Fired when `autoHeight` is true and rich content height is changed
+ *  - `height-changed`: Fired when `autoHeight` is true and rich content height is changed.
+ *      - By defalult it opens link in browser tab when user tap on link. If integrator wants to do something new then prevent this event and do work as you want.
  *  - `body-tap`: Fired when user tap on iFrame body
  * 
+ * ## Future work:
+ *  - Make action buttons as disabled until iFrame editor is not ready.
+ * 
  * ## USAGE PATTERN: 
- *  <dw-text-editor iframePath="/path/to/squire.html" value="<h2>Hello World.</h2>" readonly autoHeight></dw-text-editor>
+ *  <dw-text-editor iframePath="/path/to/squire.html" value="<h2>Hello World.</h2>" readonly autoHeight autoFocus></dw-text-editor>
  */
 
 class DwTextEditor extends LitElement {
@@ -125,6 +129,13 @@ class DwTextEditor extends LitElement {
       },
 
       /**
+       * Set `true` to set auto focus into iFrame body when iFrame is ready with its initial content
+       */
+      autoFocus: {
+        type: Boolean
+      },
+
+      /**
        * Current state of Bold menu in toolbar.
        */
       _isBold: {
@@ -214,6 +225,7 @@ class DwTextEditor extends LitElement {
   constructor() {
     super();
     this.autoHeight = false;
+    this.autoFocus = false;
     this.iframePath = '/squire.html';
   }
 
@@ -306,7 +318,12 @@ class DwTextEditor extends LitElement {
     this._content = this._iframe.contentDocument.body;
     this._updateReadOnly();
     this.setValue(this.value);
-    this._editor.focus();
+
+    //Set focus if `autoFocus` is true
+    if(this.autoFocus) {
+      this._editor.focus();
+    }
+
     this._content.addEventListener('click', this._dispatchBodyTapEvent.bind(this));
     this._editor.addEventListener('pathChange', this._pathChanged.bind(this));
     this._editor.addEventListener('input', this._dispatchValueChange.bind(this));
