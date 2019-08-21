@@ -79,6 +79,15 @@ class DwTextEditor extends LitElement {
           height: 100%;
         }
 
+        :host([autoHeight]) {
+          position: relative;
+          display: grid;
+        }
+
+        :host([autoHeight]) iframe{
+          height: 1.5em;
+        }
+
       `
     ]
   }
@@ -111,7 +120,8 @@ class DwTextEditor extends LitElement {
        * By default value is `false`.
        */
       autoHeight: {
-        type: Boolean
+        type: Boolean,
+        reflect: true
       },
 
       /**
