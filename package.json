@@ -23,5 +23,8 @@
   },
   "_moduleAliases": {
     "icons": "node_modules/@dreamworld/material-icons"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
