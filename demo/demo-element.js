@@ -23,7 +23,7 @@ class DemoElement extends LitElement {
       <h2>dw-text-editor Demo:</h2>
       <h3>Edit Mode</h3>
       <div class="editor-container">
-        <dw-text-editor value="Hello world.." @value-changed="${this._valueChange}"></dw-text-editor>
+        <dw-text-editor autoFocus value="Hello world.." @value-changed="${this._valueChange}"></dw-text-editor>
       </div>
 
       <h3>Readonly Mode</h3>

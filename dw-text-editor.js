@@ -29,7 +29,11 @@ class DwTextEditor extends LitElement {
     return [
       css`
         :host{
+          display: -ms-flexbox;
+          display: -webkit-flex;
           display: flex;
+          -ms-flex-direction: column;
+          -webkit-flex-direction: column;
           flex-direction: column;
           position: absolute;
           top: 0;
@@ -39,9 +43,17 @@ class DwTextEditor extends LitElement {
         }
 
         #toolbar{
+          display: -ms-flexbox;
+          display: -webkit-flex;
           display: flex;
+          -ms-flex-direction: row;
+          -webkit-flex-direction: row;
           flex-direction: row;
+          -ms-flex-align: center;
+          -webkit-align-items: center;
           align-items: center;
+          -ms-flex-wrap: wrap;
+          -webkit-flex-wrap: wrap;
           flex-wrap: wrap;
           border-bottom: 1px solid var(--toolbar-border-color, black);
         }
@@ -60,22 +72,27 @@ class DwTextEditor extends LitElement {
           border-radius: 4px;
           outline: none;
           margin: 4px 4px;
+          cursor: pointer;
         }
 
         .menu-btn[active], .menu-btn[active]:hover{
           fill: var(--menu-btn-active-color, #c11e5c);
         }
 
-        .menu-btn:hover{
-          background-color: var(--menu-btn-hover-color, #ebebeb);
-        }
-
-        iframe{
-          width: 100%;
+        .iframe-container{
+          height: calc(100% - 40px);
           -webkit-flex: 1; /* Safari 6.1+ */
           -ms-flex: 1; /* IE 10 */ 
           flex: 1;
-          height: calc(100% - 40px);
+          -webkit-overflow-scrolling: touch;
+          overflow: auto;
+          position: relative;
+        }
+
+        iframe{
+          position: absolute;
+          width: 100%;
+          height: 100%;
           border: none;
         }
 
@@ -85,7 +102,8 @@ class DwTextEditor extends LitElement {
 
         :host([autoHeight]) {
           position: relative;
-          display: grid;
+          display:-ms-grid;
+          display:grid;
         }
 
         :host([autoHeight]) iframe{
@@ -216,9 +234,11 @@ class DwTextEditor extends LitElement {
         </button>
       </div>
 
-      <iframe 
-        @load="${this._init}"
-        src="${this.iframePath}"></iframe>  
+      <div class="iframe-container">
+        <iframe 
+          @load="${this._init}"
+          src="${this.iframePath}"></iframe>  
+      </div>
     `;
   }
 
