@@ -15,6 +15,10 @@ class DemoElement extends LitElement {
           border: 1px solid black;
           position: relative;
         }
+
+        dw-text-editor{
+          height: 100%;
+        }
       `
     ]
   }
