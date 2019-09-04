@@ -35,11 +35,6 @@ class DwTextEditor extends LitElement {
           -ms-flex-direction: column;
           -webkit-flex-direction: column;
           flex-direction: column;
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
         }
 
         #toolbar{
@@ -75,29 +70,24 @@ class DwTextEditor extends LitElement {
           cursor: pointer;
         }
 
-        .menu-btn[active], .menu-btn[active]:hover{
-          fill: var(--menu-btn-active-color, #c11e5c);
+        .menu-btn:hover, .menu-btn[active], .menu-btn[active]:hover{
+          background-color: var(--menu-btn-hover-color, #ebebeb);
         }
 
         .iframe-container{
-          height: calc(100% - 40px);
-          -webkit-flex: 1; /* Safari 6.1+ */
-          -ms-flex: 1; /* IE 10 */ 
+          -ms-flex: 1 1 0.000000001px;
+          -webkit-flex: 1;
           flex: 1;
-          -webkit-overflow-scrolling: touch;
+          -webkit-flex-basis: 0.000000001px;
+          flex-basis: 0.000000001px;
           overflow: auto;
           position: relative;
         }
 
         iframe{
-          position: absolute;
           width: 100%;
-          height: 100%;
+          height: 98%; /* Actually 100% should be worked but doesn't works. Need to find cause. */
           border: none;
-        }
-
-        :host([readonly]) iframe{
-          height: 100%;
         }
 
         :host([autoHeight]) {
@@ -108,6 +98,16 @@ class DwTextEditor extends LitElement {
 
         :host([autoHeight]) iframe{
           height: 1.5em;
+        }
+
+        @media(max-width: 460px){
+          .menu-btn, .menu-btn:hover{
+            background-color: transparent;
+          }
+
+          .menu-btn[active], .menu-btn[active]:hover{
+            background-color: var(--menu-btn-hover-color, #ebebeb);
+          }
         }
 
       `
@@ -237,7 +237,7 @@ class DwTextEditor extends LitElement {
       <div class="iframe-container">
         <iframe 
           @load="${this._init}"
-          src="${this.iframePath}"></iframe>  
+          src="${this.iframePath}"></iframe> 
       </div>
     `;
   }
