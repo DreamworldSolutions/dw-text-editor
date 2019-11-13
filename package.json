@@ -4,8 +4,7 @@
   "description": "A light-weight Rich Text Editor based on Squire, built as LitElement WebComponent",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "link-module-alias": "link-module-alias"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -14,16 +13,12 @@
   "author": "Nirmal Baldaniya",
   "license": "MIT",
   "dependencies": {
-    "lit-element": "2.2.1",
-    "@webcomponents/webcomponentsjs": "2.2.10"
+    "@dreamworld/dw-icon": "^1.0.2",
+    "@webcomponents/webcomponentsjs": "2.2.10",
+    "lit-element": "2.2.1"
   },
   "devDependencies": {
-    "@dreamworld/material-icons": "^0.0.5",
-    "link-module-alias": "^1.2.0",
     "semantic-release": "beta"
-  },
-  "_moduleAliases": {
-    "icons": "node_modules/@dreamworld/material-icons"
   },
   "publishConfig": {
     "access": "public"
