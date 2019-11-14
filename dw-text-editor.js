@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { getIcon } from 'icons';
+import '@dreamworld/dw-icon/dw-icon';
 
 /**
  * It is a HTML5 rich text editor.
@@ -16,6 +16,9 @@ import { getIcon } from 'icons';
  *  - `height-changed`: Fired when `autoHeight` is true and rich content height is changed.
  *      - By defalult it opens link in browser tab when user tap on link. If integrator wants to do something new then prevent this event and do work as you want.
  *  - `body-tap`: Fired when user tap on iFrame body
+ * 
+ * ## CSS Variables: 
+ *  - --toolbar-icon-color
  * 
  * ## Future work:
  *  - Make action buttons as disabled until iFrame editor is not ready.
@@ -35,6 +38,7 @@ class DwTextEditor extends LitElement {
           -ms-flex-direction: column;
           -webkit-flex-direction: column;
           flex-direction: column;
+          --dw-icon-color: var(--toolbar-icon-color, rgba(0, 0, 0, 0.54));
         }
 
         #toolbar{
@@ -175,6 +179,13 @@ class DwTextEditor extends LitElement {
       },
 
       /**
+       * Current state of Strikethrough menu in toolbar.
+       */
+      _isStrikethrough: {
+        type: Boolean
+      },
+
+      /**
        * Current state of Number menu in toolbar.
        */
       _isOrderedList: {
@@ -198,7 +209,7 @@ class DwTextEditor extends LitElement {
           title="Bold" 
           ?active="${this._isBold}"
           @click="${this._updateBold}">
-          ${getIcon('editor.format_bold')}
+          <dw-icon name="format_bold"></dw-icon>
         </button>
 
         <button 
@@ -206,7 +217,7 @@ class DwTextEditor extends LitElement {
           title="Italic" 
           ?active="${this._isItalic}"
           @click="${this._updateItalic}">
-          ${getIcon('editor.format_italic')}
+          <dw-icon name="format_italic"></dw-icon>
         </button>
 
         <button 
@@ -214,7 +225,15 @@ class DwTextEditor extends LitElement {
           title="Underline" 
           ?active="${this._isUnderlined}"
           @click="${this._updateUnderlined}">
-          ${getIcon('editor.format_underlined')}
+          <dw-icon name="format_underlined"></dw-icon>
+        </button>
+
+        <button 
+          class="menu-btn" 
+          title="Strikethrough" 
+          ?active="${this._isStrikethrough}"
+          @click="${this._updateStrikethrough}">
+          <dw-icon name="format_strikethrough"></dw-icon>
         </button>
 
         <button 
@@ -222,7 +241,7 @@ class DwTextEditor extends LitElement {
           title="Ordered List" 
           ?active="${this._isOrderedList}"
           @click="${this._updateOrdredList}">
-          ${getIcon('editor.format_list_numbered')}
+          <dw-icon name="format_list_numbered"></dw-icon>
         </button>
 
         <button 
@@ -230,7 +249,7 @@ class DwTextEditor extends LitElement {
           title="Unordered List" 
           ?active="${this._isUnorderedList}"
           @click="${this._updateUnoredredList}">
-          ${getIcon('editor.format_list_bulleted')}
+          <dw-icon name="format_list_bulleted"></dw-icon>
         </button>
       </div>
 
@@ -398,6 +417,22 @@ class DwTextEditor extends LitElement {
   }
 
   /**
+   * Updates `strikethrough` status of selected text.
+   */
+  _updateStrikethrough() {
+    if(!this._editor) {
+      console.warn('Editor is not ready.');
+      return;
+    }
+
+    if (this._isStrikethrough) {
+      this._editor.removeStrikethrough();
+    } else {
+      this._editor.strikethrough();
+    }
+  }
+
+  /**
    * Sets or removes numbered list.
    */
   _updateOrdredList() {
@@ -455,6 +490,12 @@ class DwTextEditor extends LitElement {
       this._isUnderlined = true;
     } else {
       this._isUnderlined = false;
+    }
+
+    if (this._editor.hasFormat('S')) {
+      this._isStrikethrough = true;
+    } else {
+      this._isStrikethrough = false;
     }
 
     if (this._editor.hasFormat('OL')) {
