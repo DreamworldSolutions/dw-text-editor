@@ -179,6 +179,13 @@ class DwTextEditor extends LitElement {
       },
 
       /**
+       * Current state of Strikethrough menu in toolbar.
+       */
+      _isStrikethrough: {
+        type: Boolean
+      },
+
+      /**
        * Current state of Number menu in toolbar.
        */
       _isOrderedList: {
@@ -219,6 +226,14 @@ class DwTextEditor extends LitElement {
           ?active="${this._isUnderlined}"
           @click="${this._updateUnderlined}">
           <dw-icon name="format_underlined"></dw-icon>
+        </button>
+
+        <button 
+          class="menu-btn" 
+          title="Strikethrough" 
+          ?active="${this._isStrikethrough}"
+          @click="${this._updateStrikethrough}">
+          <dw-icon name="format_strikethrough"></dw-icon>
         </button>
 
         <button 
@@ -402,6 +417,22 @@ class DwTextEditor extends LitElement {
   }
 
   /**
+   * Updates `strikethrough` status of selected text.
+   */
+  _updateStrikethrough() {
+    if(!this._editor) {
+      console.warn('Editor is not ready.');
+      return;
+    }
+
+    if (this._isStrikethrough) {
+      this._editor.removeStrikethrough();
+    } else {
+      this._editor.strikethrough();
+    }
+  }
+
+  /**
    * Sets or removes numbered list.
    */
   _updateOrdredList() {
@@ -459,6 +490,12 @@ class DwTextEditor extends LitElement {
       this._isUnderlined = true;
     } else {
       this._isUnderlined = false;
+    }
+
+    if (this._editor.hasFormat('S')) {
+      this._isStrikethrough = true;
+    } else {
+      this._isStrikethrough = false;
     }
 
     if (this._editor.hasFormat('OL')) {
