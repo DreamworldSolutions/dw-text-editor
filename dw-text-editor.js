@@ -357,6 +357,11 @@ class DwTextEditor extends LitElement {
     this._content = this._iframe.contentDocument.body;
     this._updateReadOnly();
     this.setValue(this.value);
+    this._content.addEventListener('click', (e) => {
+      setTimeout(() => {
+        e.path[0].scrollIntoView();
+      }, 500);
+    });
 
     //Set focus if `autoFocus` is true
     if(this.autoFocus) {
