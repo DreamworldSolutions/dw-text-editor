@@ -127,6 +127,7 @@ class DwTextEditor extends LitElement {
       },
 
       /**
+       * Input property.
        * HTML value of editor
        */
       value: {
@@ -272,6 +273,10 @@ class DwTextEditor extends LitElement {
     if (changedProperties.has('readonly')) {
       this._updateReadOnly();
     }
+
+    if (changedProperties.has('value')) {
+      this.setValue(this.value);
+    }
   }
 
   /**
@@ -316,7 +321,7 @@ class DwTextEditor extends LitElement {
       return;
     }
 
-    return this.value = this._editor.getHTML();
+    return this._editor.getHTML();
   }
 
   /**
