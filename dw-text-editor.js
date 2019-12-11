@@ -274,7 +274,7 @@ class DwTextEditor extends LitElement {
       this._updateReadOnly();
     }
 
-    if (changedProperties.has('value')) {
+    if (changedProperties.has('value') && this.value !== this.getValue()) {
       this.setValue(this.value);
     }
   }
