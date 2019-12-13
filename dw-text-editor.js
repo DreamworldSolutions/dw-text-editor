@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
 import '@dreamworld/dw-icon/dw-icon';
-
+import { scrollIntoView } from '@dreamworld/web-util/scrollIntoView';
 /**
  * It is a HTML5 rich text editor.
  * 
@@ -525,6 +525,7 @@ class DwTextEditor extends LitElement {
         value: this.getValue()
       }
     }));
+    this._scrollActiveElementIntoView();
   }
 
   /**
@@ -547,6 +548,19 @@ class DwTextEditor extends LitElement {
         event
       }
     }));
+    this._scrollActiveElementIntoView();
+  }
+
+  /**
+   * Scroll current focused element into view.
+   */
+  _scrollActiveElementIntoView() {
+    const doc = this.content.ownerDocument || this.content.document;
+    const win = doc.defaultView || doc.parentWindow;
+    const focusNode = win.getSelection().focusNode;
+    if (focusNode.nodeType == 1) {
+      scrollIntoView(this.content, focusNode);
+    }
   }
 }
 
