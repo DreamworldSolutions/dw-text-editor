@@ -284,14 +284,14 @@ class DwTextEditor extends LitElement {
    * Sets `contenteditable` based on `readonly`.
    */
   _updateReadOnly() {
-    if (!this._content) {
+    if (!this.content) {
       return;
     }
 
     if (!this.readonly) {
-      this._content.setAttribute('contenteditable', true);
+      this.content.setAttribute('contenteditable', true);
     } else {
-      this._content.removeAttribute('contenteditable');
+      this.content.removeAttribute('contenteditable');
     }
   }
 
@@ -328,7 +328,7 @@ class DwTextEditor extends LitElement {
    * If `autoHeight` is `true` then reset iframe height as content height.
    */
   refreshHeight() {
-    if(!this._iframe || !this._content) {
+    if(!this._iframe || !this.content) {
       console.warn('Iframe is not ready');
       return;
     }
@@ -337,13 +337,13 @@ class DwTextEditor extends LitElement {
       return;
     }
 
-    this._content.style.overflowY = 'hidden';
+    this.content.style.overflowY = 'hidden';
 
     //Old height
     let _oldHeight = this._iframe.style.height;
 
     //Set iframe Height to content height
-    let _scrollHeight = this._content.scrollHeight;
+    let _scrollHeight = this.content.scrollHeight;
     this._iframe.style.height = _scrollHeight + 'px';
 
     //Fire height changed event if iFrame height is changed
@@ -359,7 +359,7 @@ class DwTextEditor extends LitElement {
     }
     this._iframe = this.shadowRoot.querySelector('iframe');
     this._editor = this._iframe.contentWindow.editor;
-    this._content = this._iframe.contentDocument.body;
+    this.content = this._iframe.contentDocument.body;
     this._updateReadOnly();
     this.setValue(this.value);
 
@@ -368,7 +368,7 @@ class DwTextEditor extends LitElement {
       this._editor.focus();
     }
 
-    this._content.addEventListener('click', this._dispatchBodyTapEvent.bind(this));
+    this.content.addEventListener('click', this._dispatchBodyTapEvent.bind(this));
     this._editor.addEventListener('pathChange', this._pathChanged.bind(this));
     this._editor.addEventListener('input', this._dispatchValueChange.bind(this));
   }
