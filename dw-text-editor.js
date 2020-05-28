@@ -88,6 +88,10 @@ class DwTextEditor extends LitElement {
           position: relative;
         }
 
+        :host([readonly]) iframe {
+          display: block;
+        }
+
         iframe{
           width: 100%;
           height: 98%; /* Actually 100% should be worked but doesn't works. Need to find cause. */
@@ -350,6 +354,16 @@ class DwTextEditor extends LitElement {
     if(_oldHeight !== _scrollHeight + 'px') {
       this._dispatchHeightChange(_scrollHeight);
     }
+  }
+
+  /**
+   * @returns {String} user selected value.
+   * @public
+   */
+  getSelectedText() {
+    let doc = this.content.ownerDocument || this.content.document;
+    let win = doc.defaultView || doc.parentWindow;
+    return win && win.getSelection && win.getSelection().toString() || '';
   }
 
   _init() {
