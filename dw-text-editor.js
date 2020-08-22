@@ -1,4 +1,5 @@
-import { LitElement, html, css } from 'lit-element';
+import { html, css } from 'lit-element';
+import { LitElement } from '@dreamworld/pwa-helpers/lit-element.js';
 import '@dreamworld/dw-icon/dw-icon';
 import { scrollIntoView } from '@dreamworld/web-util/scrollIntoView';
 /**

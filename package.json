@@ -14,6 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "@dreamworld/dw-icon": "^1.0.2",
+    "@dreamworld/pwa-helpers": "^1.8.0",
     "@dreamworld/web-util": "^1.0.0",
     "@webcomponents/webcomponentsjs": "2.2.10",
     "lit-element": "2.2.1"
@@ -23,5 +24,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "resolutions": {
+    "lit-element": "2.3.1",
+    "lit-html": "1.2.1"
   }
 }
