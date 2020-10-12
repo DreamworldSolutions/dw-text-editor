@@ -56,6 +56,16 @@ class DwTextEditor extends LitElement {
           -webkit-flex-wrap: wrap;
           flex-wrap: wrap;
           border-bottom: 1px solid var(--toolbar-border-color, black);
+          position: sticky;
+          position: -webkit-sticky;
+          position: -moz-sticky;
+          position: -ms-sticky;
+          position: -o-sticky;
+          top: 0;
+          left: 0;
+          right: 0;
+          background: var(--toolbar-background, #FFF);
+          z-index: 1;
         }
 
         :host([readonly]) #toolbar{
@@ -79,7 +89,7 @@ class DwTextEditor extends LitElement {
           background-color: var(--menu-btn-hover-color, #ebebeb);
         }
 
-        .iframe-container{
+        :host(:not([autoheight])) .iframe-container {
           -ms-flex: 1 1 0.000000001px;
           -webkit-flex: 1;
           flex: 1;
@@ -97,12 +107,6 @@ class DwTextEditor extends LitElement {
           width: 100%;
           height: 98%; /* Actually 100% should be worked but doesn't works. Need to find cause. */
           border: none;
-        }
-
-        :host([autoHeight]) {
-          position: relative;
-          display:-ms-grid;
-          display:grid;
         }
 
         :host([autoHeight]) iframe{
@@ -342,18 +346,19 @@ class DwTextEditor extends LitElement {
       return;
     }
 
-    this.content.style.overflowY = 'hidden';
-
     //Old height
-    let _oldHeight = this._iframe.style.height;
+    const oldHeight = this._iframe.style.height;
 
     //Set iframe Height to content height
-    let _scrollHeight = this.content.scrollHeight;
-    this._iframe.style.height = _scrollHeight + 'px';
+    const scrollHeight = Math.max(this.content.scrollHeight, 200);
+    this.content.style.height = `${scrollHeight}px`
+    this._iframe.style.height =  `${scrollHeight}px`;
+    const toolbarHeight = this.readonly ? 0 : 41; // 41px is toolbar height
+    this.style.height = `${scrollHeight + toolbarHeight}px`; 
 
     //Fire height changed event if iFrame height is changed
-    if(_oldHeight !== _scrollHeight + 'px') {
-      this._dispatchHeightChange(_scrollHeight);
+    if(oldHeight !== scrollHeight + 'px') {
+      this._dispatchHeightChange(scrollHeight);
     }
   }
 
@@ -541,6 +546,9 @@ class DwTextEditor extends LitElement {
       }
     }));
     this._scrollActiveElementIntoView();
+    if (this.autoHeight) {
+      this.refreshHeight();
+    }
   }
 
   /**
