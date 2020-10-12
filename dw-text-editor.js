@@ -348,16 +348,14 @@ class DwTextEditor extends LitElement {
 
     //Old height
     const oldHeight = this._iframe.style.height;
+    const scrollHeight = Math.max(this.content.scrollHeight, 200); // Minumun height is 200px;
 
-    //Set iframe Height to content height
-    const scrollHeight = Math.max(this.content.scrollHeight, 200);
-    this.content.style.height = `${scrollHeight}px`
-    this._iframe.style.height =  `${scrollHeight}px`;
-    const toolbarHeight = this.readonly ? 0 : 41; // 41px is toolbar height
-    this.style.height = `${scrollHeight + toolbarHeight}px`; 
-
-    //Fire height changed event if iFrame height is changed
-    if(oldHeight !== scrollHeight + 'px') {
+    //Sets iframe Height to content height & fires height changed event if iFrame height is changed
+    if (oldHeight !==  `${scrollHeight}px`) {
+      this.content.style.height = `${scrollHeight}px`
+      this._iframe.style.height =  `${scrollHeight}px`;
+      const toolbarHeight = this.readonly ? 0 : 41; // 41px is toolbar height
+      this.style.height = `${scrollHeight + toolbarHeight}px`;
       this._dispatchHeightChange(scrollHeight);
     }
   }
