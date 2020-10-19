@@ -348,7 +348,7 @@ class DwTextEditor extends LitElement {
 
     //Old height
     const oldHeight = this._iframe.style.height;
-    const minHeight = this.readonly ? 0 : 200; // Minumun height is 200px when non in `readonly` mode;
+    const minHeight = this.readonly ? 0 : 200; // Minumun height is 200px when not `readonly` mode;
     const scrollHeight = Math.max(this.content.scrollHeight, minHeight); 
 
     //Sets iframe Height to content height & fires height changed event if iFrame height is changed
