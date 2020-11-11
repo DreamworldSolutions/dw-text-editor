@@ -161,6 +161,12 @@ class DwTextEditor extends LitElement {
       },
 
       /**
+       * Input property. 
+       * Editor's minimum height. Default is 150;
+       */
+      minHeight: { type: Number },
+
+      /**
        * Set `true` to set auto focus into iFrame body when iFrame is ready with its initial content
        */
       autoFocus: {
@@ -276,6 +282,7 @@ class DwTextEditor extends LitElement {
     this.autoHeight = false;
     this.autoFocus = false;
     this.iframePath = '/squire.html';
+    this.minHeight = 150; // Minumun height for edit mode. Default is 150px;
   }
 
   updated(changedProperties) {
@@ -348,7 +355,7 @@ class DwTextEditor extends LitElement {
 
     //Old height
     const oldHeight = this._iframe.style.height;
-    const minHeight = this.readonly ? 0 : 200; // Minumun height is 200px when not `readonly` mode;
+    const minHeight = this.readonly ? 0 : this.minHeight;
     const scrollHeight = Math.max(this.content.scrollHeight, minHeight); 
 
     //Sets iframe Height to content height & fires height changed event if iFrame height is changed
