@@ -9,7 +9,7 @@ let dummyReachTextEditor;
 /**
  * @param {Element} reachTextEditor Passed original text-editor el, because we can use some style with dummy editor.
  *                                  like, width, min-height etc.
- * @returns {Element} text-editor when it's already createa and attached, otherwise create new dummy text-editor's and returns it.
+ * @returns {Element} text-editor when it's already createa and attached, otherwise create and attached new dummy text-editor's and returns it.
  */
 export const getDummyReachTextEditor = (reachTextEditor) => {
   //TODO: set same width to dummy text-editor as a original text-editor.
