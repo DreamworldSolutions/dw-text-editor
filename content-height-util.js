@@ -36,7 +36,7 @@ const INIT_WIDTH = 500;
 let textEditor;
 
 /**
- * An instance of the iframe body which is retrieved from the `iframe.contentWindow.body`.
+ * An instance of the iframe body which is retrieved from the `iframe.contentWindow.body`. 
  */
 let textContent;
 
