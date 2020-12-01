@@ -388,6 +388,7 @@ class DwTextEditor extends LitElement {
     this._iframe = this.shadowRoot.querySelector('iframe');
     this._editor = this._iframe.contentWindow.editor;
     this.content = this._iframe.contentDocument.body;
+    this.content.style.overflow = 'hidden';
     this._updateReadOnly();
     this.setValue(this.value);
 
