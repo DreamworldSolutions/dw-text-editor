@@ -35,6 +35,10 @@ const INIT_WIDTH = 500;
  */
 let textEditor;
 
+/**
+ * An instance of the iframe body which is retrieved from the `iframe.contentWindow.body`.
+ */
+let textContent;
 
 /**
  * A function used to create/initialize the extra text-editor, which is used to compute the
@@ -49,8 +53,29 @@ let textEditor;
  * @returns {Promise} Resolved when TextEditor is initialized.
  * 
  */
-export const init = () => {
+export const init = (iframePath) => {
+  let resolve, reject;
+  let promise = new Promise((res, rej) => { resolve = res, reject = rej; });
+  if (textEditor) {
+    resolve({textEditor, textContent});
+  } else {
+    let iframe = document.createElement('iframe');
+    iframe.addEventListener('load', () => {
+      textEditor = iframe.contentWindow.editor;
+      textContent = iframe.contentDocument.body;
+      textContent.style.width = INIT_WIDTH + 'px';
+      resolve({textEditor, textContent});
+    });
 
+    iframe.style.position = 'fixed';
+    iframe.style.top = '-99999px';
+    iframe.style.left = '-99999px';
+    document.body.appendChild(iframe);
+    iframe.src = iframePath;
+    window.kerikaTextEditorIframe = iframe;
+  }
+
+  return promise;
 }
 
 /**
@@ -63,7 +88,7 @@ export const init = () => {
  * @returns {Number} Required content height.
  */
 export const getContentHeight = (html, width) => {
-  if(!html) {
+  if (!html) {
     return 0;
   }
 
@@ -71,5 +96,11 @@ export const getContentHeight = (html, width) => {
     throw new Error("textEditor isn't yet initialized. Please invoked `init()` before this.");
   }
 
-  //TODO: Throw error when either html or width isn't specified.
+  if (!width) {
+    throw new Error("width is mandatory arguments.");
+  }
+
+  textContent.style.width = width + 'px';
+  textEditor.setHTML(html);
+  return textContent.scrollHeight;
 }
