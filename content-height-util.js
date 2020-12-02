@@ -41,6 +41,16 @@ let textEditor;
 let textContent;
 
 /**
+ * text editor loaded promise.
+ */
+let textEditorLoadedPromise;
+
+/**
+ * newly created iframe is loaded or not.
+ */
+let iframeIsLoaded = true;
+
+/**
  * A function used to create/initialize the extra text-editor, which is used to compute the
  * content-height later.
  * 
@@ -54,16 +64,22 @@ let textContent;
  * 
  */
 export const init = (iframePath) => {
-  let resolve, reject;
-  let promise = new Promise((res, rej) => { resolve = res, reject = rej; });
-  if (textEditor) {
+  if(!iframeIsLoaded) {
+    return textEditorLoadedPromise;
+  }
+
+  let resolve;
+  textEditorLoadedPromise = new Promise((res) => { resolve = res });
+  if (textContent) {
     resolve({textEditor, textContent});
   } else {
+    iframeIsLoaded = false;
     let iframe = document.createElement('iframe');
     iframe.addEventListener('load', () => {
       textEditor = iframe.contentWindow.editor;
       textContent = iframe.contentDocument.body;
       textContent.style.width = INIT_WIDTH + 'px';
+      iframeIsLoaded = true;
       resolve({textEditor, textContent});
     });
 
@@ -72,22 +88,23 @@ export const init = (iframePath) => {
     iframe.style.left = '-99999px';
     document.body.appendChild(iframe);
     iframe.src = iframePath;
-    window.kerikaTextEditorIframe = iframe;
   }
-
-  return promise;
+  return textEditorLoadedPromise;
 }
 
 /**
  * Identifies the content-height for the given HTML. 
  * 
  * @param {*} html HTML content for which content-height is to be identified.
- * @param {*} width Width of the TextEditor for which content-height is to be identified.
+ * @param {Number} width Width of the TextEditor for which content-height is to be identified.
  *                  It's important configuration, because the content height is properly
  *                  computed only when the width of the editor is properly set.
+ * @param {Number} height height of iframe. Default value is 150.
+ *                  Because every browser has different height for iframe so, 
+ *                  we can set's a iframe height, to get proper content height.
  * @returns {Number} Required content height.
  */
-export const getContentHeight = (html, width) => {
+export const getContentHeight = (html, width, height = 150) => {
   if (!html) {
     return 0;
   }
@@ -101,6 +118,7 @@ export const getContentHeight = (html, width) => {
   }
 
   textContent.style.width = width + 'px';
+  textContent.style.height = height + 'px';
   textEditor.setHTML(html);
   return textContent.scrollHeight;
 }
