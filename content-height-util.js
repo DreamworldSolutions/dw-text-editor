@@ -1,3 +1,5 @@
+import once from 'lodash-es/once.js';
+
 /**
  * A Utility to identify the content height for an HTML content. It's used to compute the required
  * height for the editor when auto-height feature is enabled. 
@@ -41,16 +43,6 @@ let textEditor;
 let textContent;
 
 /**
- * text editor loaded promise.
- */
-let textEditorLoadedPromise;
-
-/**
- * newly created iframe is loaded or not.
- */
-let iframeIsLoaded = true;
-
-/**
  * A function used to create/initialize the extra text-editor, which is used to compute the
  * content-height later.
  * 
@@ -63,34 +55,24 @@ let iframeIsLoaded = true;
  * @returns {Promise} Resolved when TextEditor is initialized.
  * 
  */
-export const init = (iframePath) => {
-  if(!iframeIsLoaded) {
-    return textEditorLoadedPromise;
-  }
-
+export const init = once((iframePath) => {
   let resolve;
-  textEditorLoadedPromise = new Promise((res) => { resolve = res });
-  if (textContent) {
+  let promise = new Promise((res) => { resolve = res });
+  let iframe = document.createElement('iframe');
+  iframe.addEventListener('load', () => {
+    textEditor = iframe.contentWindow.editor;
+    textContent = iframe.contentDocument.body;
+    textContent.style.width = INIT_WIDTH + 'px';
     resolve({textEditor, textContent});
-  } else {
-    iframeIsLoaded = false;
-    let iframe = document.createElement('iframe');
-    iframe.addEventListener('load', () => {
-      textEditor = iframe.contentWindow.editor;
-      textContent = iframe.contentDocument.body;
-      textContent.style.width = INIT_WIDTH + 'px';
-      iframeIsLoaded = true;
-      resolve({textEditor, textContent});
-    });
+  });
 
-    iframe.style.position = 'fixed';
-    iframe.style.top = '-99999px';
-    iframe.style.left = '-99999px';
-    document.body.appendChild(iframe);
-    iframe.src = iframePath;
-  }
-  return textEditorLoadedPromise;
-}
+  iframe.style.position = 'fixed';
+  iframe.style.top = '-99999px';
+  iframe.style.left = '-99999px';
+  document.body.appendChild(iframe);
+  iframe.src = iframePath;
+  return promise;
+});
 
 /**
  * Identifies the content-height for the given HTML. 
