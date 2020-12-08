@@ -17,7 +17,8 @@
     "@dreamworld/pwa-helpers": "^1.8.0",
     "@dreamworld/web-util": "^1.0.0",
     "@webcomponents/webcomponentsjs": "2.2.10",
-    "lit-element": "2.2.1"
+    "lit-element": "2.2.1",
+    "lodash-es": "^4.17.15"
   },
   "devDependencies": {
     "semantic-release": "17.0.8"

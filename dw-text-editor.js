@@ -2,6 +2,7 @@ import { html, css } from 'lit-element';
 import { LitElement } from '@dreamworld/pwa-helpers/lit-element.js';
 import '@dreamworld/dw-icon/dw-icon';
 import { scrollIntoView } from '@dreamworld/web-util/scrollIntoView';
+import * as contentHeightUtil from './content-height-util.js';
 /**
  * It is a HTML5 rich text editor.
  * 
@@ -174,6 +175,13 @@ class DwTextEditor extends LitElement {
       },
 
       /**
+       * Input property.
+       * Passed scroll element for show content into view.
+       * Default scrolling element is iframe content.
+       */
+      scrollingElement: { type: Object },
+
+      /**
        * Current state of Bold menu in toolbar.
        */
       _isBold: {
@@ -283,6 +291,11 @@ class DwTextEditor extends LitElement {
     this.autoFocus = false;
     this.iframePath = '/squire.html';
     this.minHeight = 150; // Minumun height for edit mode. Default is 150px;
+
+    /**
+     * content height util's is ready or not.
+     */
+    this._contentHeightUtilReady;
   }
 
   updated(changedProperties) {
@@ -356,7 +369,8 @@ class DwTextEditor extends LitElement {
     //Old height
     const oldHeight = this._iframe.style.height;
     const minHeight = this.readonly ? 0 : this.minHeight;
-    const scrollHeight = Math.max(this.content.scrollHeight, minHeight); 
+    const contentHeight = this._contentHeightUtilReady ? contentHeightUtil.getContentHeight(this.getValue(), this.content.offsetWidth) : this.content.scrollHeight;
+    const scrollHeight = Math.max(contentHeight, minHeight); 
 
     //Sets iframe Height to content height & fires height changed event if iFrame height is changed
     if (oldHeight !== `${scrollHeight}px`) {
@@ -388,7 +402,8 @@ class DwTextEditor extends LitElement {
     this._iframe = this.shadowRoot.querySelector('iframe');
     this._editor = this._iframe.contentWindow.editor;
     this.content = this._iframe.contentDocument.body;
-    this.content.style.overflow = 'hidden';
+    this.content.style.overflow = 'hidden'; 
+    this.scrollingElement = this.scrollingElement || this.content;
     this._updateReadOnly();
     this.setValue(this.value);
 
@@ -396,6 +411,11 @@ class DwTextEditor extends LitElement {
     if(this.autoFocus) {
       this._editor.focus();
     }
+    
+    //Initialize dummy text editor for get content height;
+    contentHeightUtil.init(this.iframePath).then(() => {
+      this._contentHeightUtilReady = true;
+    });
 
     this.content.addEventListener('click', this._dispatchBodyTapEvent.bind(this));
     this._editor.addEventListener('pathChange', this._pathChanged.bind(this));
@@ -591,7 +611,7 @@ class DwTextEditor extends LitElement {
     const win = doc.defaultView || doc.parentWindow;
     const focusNode = win.getSelection().focusNode;
     if (focusNode && focusNode.nodeType == 1) {
-      scrollIntoView(this.content, focusNode);
+      scrollIntoView(this.scrollingElement, focusNode);
     }
   }
 }
