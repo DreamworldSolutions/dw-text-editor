@@ -373,7 +373,7 @@ class DwTextEditor extends LitElement {
     const contentHeight = this._contentHeightUtilReady ? contentHeightUtil.getContentHeight(this.getValue(), this.content.offsetWidth) : this.content.scrollHeight;
     const scrollHeight = Math.max(contentHeight, minHeight); 
 
-    console.log("refreshHeight ==> oldHeight: ", oldHeight, );
+    console.log("refreshHeight ==> height: ", oldHeight, scrollHeight);
     //Sets iframe Height to content height & fires height changed event if iFrame height is changed
     if (oldHeight != `${scrollHeight}px`) {
       if (!this.readonly) {
