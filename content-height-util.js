@@ -69,6 +69,8 @@ export const init = once((iframePath) => {
   iframe.style.position = 'fixed';
   iframe.style.top = '-99999px';
   iframe.style.left = '-99999px';
+  iframe.style.padding = '0px';
+  i
   document.body.appendChild(iframe);
   iframe.src = iframePath;
   return promise;
@@ -86,7 +88,7 @@ export const init = once((iframePath) => {
  *                  we can set's a iframe height, to get proper content height.
  * @returns {Number} Required content height.
  */
-export const getContentHeight = (html, width, height = 24) => {
+export const getContentHeight = (html, width, height = 24, padding = 0, margin = 0) => {
   if (!html) {
     return 0;
   }
@@ -104,6 +106,8 @@ export const getContentHeight = (html, width, height = 24) => {
 
   textContent.style.width = width + 'px';
   textContent.style.height = height + 'px';
+  textContent.style.padding = padding + 'px';
+  textContent.style.margin = margin + 'px';
   textEditor.setHTML(html);
   return textContent.scrollHeight;
 }

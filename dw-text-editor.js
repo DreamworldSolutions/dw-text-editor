@@ -370,7 +370,7 @@ class DwTextEditor extends LitElement {
     const oldHeight = this._iframe.style.height;
     const minHeight = this.readonly ? 0 : this.minHeight;
     console.log("refreshHeight ==> width: ", this.content.offsetWidth, this.content.offsetWidth);
-    const contentHeight = this._contentHeightUtilReady ? contentHeightUtil.getContentHeight(this.getValue(), this.content.offsetWidth) : this.content.scrollHeight;
+    const contentHeight = this._contentHeightUtilReady ? contentHeightUtil.getContentHeight(this.getValue(), this.content.offsetWidth, this.readonly ? 0 : 16) : this.content.scrollHeight;
     const scrollHeight = Math.max(contentHeight, minHeight); 
 
     console.log("refreshHeight ==> height: ", oldHeight, scrollHeight);
