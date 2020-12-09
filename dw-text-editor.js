@@ -369,11 +369,13 @@ class DwTextEditor extends LitElement {
     //Old height
     const oldHeight = this._iframe.style.height;
     const minHeight = this.readonly ? 0 : this.minHeight;
+    console.log("refreshHeight ==> width: ", this.content.offsetWidth, this.content.offsetWidth);
     const contentHeight = this._contentHeightUtilReady ? contentHeightUtil.getContentHeight(this.getValue(), this.content.offsetWidth) : this.content.scrollHeight;
     const scrollHeight = Math.max(contentHeight, minHeight); 
 
+    console.log("refreshHeight ==> oldHeight: ", oldHeight, );
     //Sets iframe Height to content height & fires height changed event if iFrame height is changed
-    if (oldHeight !== `${scrollHeight}px`) {
+    if (oldHeight != `${scrollHeight}px`) {
       if (!this.readonly) {
         this.content.style.height = `${scrollHeight}px`;
       }
@@ -574,10 +576,11 @@ class DwTextEditor extends LitElement {
         value: this.getValue()
       }
     }));
-    this._scrollActiveElementIntoView();
     if (this.autoHeight) {
       this.refreshHeight();
     }
+    console.log("_dispatchValueChange");
+    this._scrollActiveElementIntoView();
   }
 
   /**
@@ -601,6 +604,7 @@ class DwTextEditor extends LitElement {
       }
     }));
     this._scrollActiveElementIntoView();
+    console.log("_dispatchBodyTapEvent");
   }
 
   /**

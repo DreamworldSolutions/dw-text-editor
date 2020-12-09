@@ -95,6 +95,9 @@ export const getContentHeight = (html, width, height = 150) => {
     throw new Error("textEditor isn't yet initialized. Please invoked `init()` before this.");
   }
 
+
+  console.log("getContentHeight ==> width: ", width);
+
   if (!width) {
     throw new Error("width is mandatory arguments.");
   }
