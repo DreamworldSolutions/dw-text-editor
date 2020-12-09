@@ -69,8 +69,6 @@ export const init = once((iframePath) => {
   iframe.style.position = 'fixed';
   iframe.style.top = '-99999px';
   iframe.style.left = '-99999px';
-  iframe.style.padding = '0px';
-  i
   document.body.appendChild(iframe);
   iframe.src = iframePath;
   return promise;
