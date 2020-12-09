@@ -616,6 +616,8 @@ class DwTextEditor extends LitElement {
     const focusNode = win.getSelection().focusNode;
     if (focusNode && focusNode.nodeType == 1) {
       scrollIntoView(this.scrollingElement, focusNode);
+    } else {
+      console.log("_scrollActiveElementIntoView ==>", focusNode, focusNode && focusNode.nodeType);
     }
   }
 }
