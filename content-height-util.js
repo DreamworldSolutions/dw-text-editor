@@ -86,7 +86,7 @@ export const init = once((iframePath) => {
  *                  we can set's a iframe height, to get proper content height.
  * @returns {Number} Required content height.
  */
-export const getContentHeight = (html, width, height = 150) => {
+export const getContentHeight = (html, width, height = 24) => {
   if (!html) {
     return 0;
   }
