@@ -579,7 +579,6 @@ class DwTextEditor extends LitElement {
     if (this.autoHeight) {
       this.refreshHeight();
     }
-    console.log("_dispatchValueChange");
     this._scrollActiveElementIntoView();
   }
 
@@ -604,7 +603,6 @@ class DwTextEditor extends LitElement {
       }
     }));
     this._scrollActiveElementIntoView();
-    console.log("_dispatchBodyTapEvent");
   }
 
   /**
@@ -616,8 +614,6 @@ class DwTextEditor extends LitElement {
     const focusNode = win.getSelection().focusNode;
     if (focusNode && focusNode.nodeType == 1) {
       scrollIntoView(this.scrollingElement, focusNode);
-    } else {
-      console.log("_scrollActiveElementIntoView ==>", focusNode, focusNode && focusNode.nodeType);
     }
   }
 }
