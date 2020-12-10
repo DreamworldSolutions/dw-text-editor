@@ -369,11 +369,12 @@ class DwTextEditor extends LitElement {
     //Old height
     const oldHeight = this._iframe.style.height;
     const minHeight = this.readonly ? 0 : this.minHeight;
-    const contentHeight = this._contentHeightUtilReady ? contentHeightUtil.getContentHeight(this.getValue(), this.content.offsetWidth) : this.content.scrollHeight;
-    const scrollHeight = Math.max(contentHeight, minHeight); 
+
+    const contentHeight = this.__getContentHeight();
+    const scrollHeight = Math.max(contentHeight, minHeight);
 
     //Sets iframe Height to content height & fires height changed event if iFrame height is changed
-    if (oldHeight !== `${scrollHeight}px`) {
+    if (oldHeight != `${scrollHeight}px`) {
       if (!this.readonly) {
         this.content.style.height = `${scrollHeight}px`;
       }
@@ -382,6 +383,25 @@ class DwTextEditor extends LitElement {
       this.style.height = `${scrollHeight + toolbarHeight}px`;
       this._dispatchHeightChange(scrollHeight);
     }
+  }
+
+  /**
+   * @returns {Number} iframe content height.
+   * @private
+   */
+  __getContentHeight() {
+    let contentHeight =  this.content.scrollHeight;
+
+    //If content-height util is ready and iframe contetn has a width then
+    //Why are we checking the width of the iframe content?
+    //  - When we set the content to the iframe then the initial width of the iframe is 0.
+    //  - At that time, the display css property of the content of the iframe is also block.
+    //  - After that we get the proper width of the iframe, so we are skip first time.
+    if(this._contentHeightUtilReady && this.content.offsetWidth) {
+      contentHeight = contentHeightUtil.getContentHeight(this.getValue(), this.readonly, this.content.offsetWidth);
+    }
+
+    return contentHeight;
   }
 
   /**
@@ -574,10 +594,10 @@ class DwTextEditor extends LitElement {
         value: this.getValue()
       }
     }));
-    this._scrollActiveElementIntoView();
     if (this.autoHeight) {
       this.refreshHeight();
     }
+    this._scrollActiveElementIntoView();
   }
 
   /**
