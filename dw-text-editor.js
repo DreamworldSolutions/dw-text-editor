@@ -389,7 +389,7 @@ class DwTextEditor extends LitElement {
   __getContentHeight() {
     let contentHeight =  this.content.scrollHeight;
     if(this._contentHeightUtilReady && this.content.offsetWidth) {
-      contentHeight = contentHeightUtil.getContentHeight(this.getValue(), this.content.offsetWidth, this.readonly);
+      contentHeight = contentHeightUtil.getContentHeight(this.getValue(), this.readonly, this.content.offsetWidth);
     }
 
     return contentHeight;
