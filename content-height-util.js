@@ -86,7 +86,7 @@ export const init = once((iframePath) => {
  *                  we can set's a iframe height, to get proper content height.
  * @returns {Number} Required content height.
  */
-export const getContentHeight = (html, width, height = 24, padding = 0, margin = 0) => {
+export const getContentHeight = (html, width, height = 24, readonly) => {
   if (!html) {
     return 0;
   }
@@ -99,9 +99,14 @@ export const getContentHeight = (html, width, height = 24, padding = 0, margin =
     throw new Error("width is mandatory arguments.");
   }
 
+  if (!readonly) {
+    textContent.setAttribute('contenteditable', true);
+  } else {
+    textContent.removeAttribute('contenteditable');
+  }
+
   textContent.style.width = width + 'px';
   textContent.style.height = height + 'px';
-  textContent.style.padding = padding + 'px';
   textContent.style.margin = margin + 'px';
   textEditor.setHTML(html);
   return textContent.scrollHeight;
