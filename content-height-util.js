@@ -107,7 +107,6 @@ export const getContentHeight = (html, width, height = 24, readonly) => {
 
   textContent.style.width = width + 'px';
   textContent.style.height = height + 'px';
-  textContent.style.margin = margin + 'px';
   textEditor.setHTML(html);
   return textContent.scrollHeight;
 }
