@@ -78,6 +78,9 @@ export const init = once((iframePath) => {
  * Identifies the content-height for the given HTML. 
  * 
  * @param {*} html HTML content for which content-height is to be identified.
+ * @param {Boolean} readonly text-editor is read-only or not.
+ *                  Because when the user has style applied based on readonly property of the iframe content, 
+*                   then we can also count the proper height for it.
  * @param {Number} width Width of the TextEditor for which content-height is to be identified.
  *                  It's important configuration, because the content height is properly
  *                  computed only when the width of the editor is properly set.
@@ -86,7 +89,7 @@ export const init = once((iframePath) => {
  *                  we can set's a iframe height, to get proper content height.
  * @returns {Number} Required content height.
  */
-export const getContentHeight = (html, width, height = 150) => {
+export const getContentHeight = (html, readonly, width, height = 24) => {
   if (!html) {
     return 0;
   }
@@ -97,6 +100,12 @@ export const getContentHeight = (html, width, height = 150) => {
 
   if (!width) {
     throw new Error("width is mandatory arguments.");
+  }
+
+  if (!readonly) {
+    textContent.setAttribute('contenteditable', true);
+  } else {
+    textContent.removeAttribute('contenteditable');
   }
 
   textContent.style.width = width + 'px';
