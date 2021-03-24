@@ -3,6 +3,7 @@ import { LitElement } from '@dreamworld/pwa-helpers/lit-element.js';
 import '@dreamworld/dw-icon/dw-icon';
 import { scrollIntoView } from '@dreamworld/web-util/scrollIntoView';
 import * as contentHeightUtil from './content-height-util.js';
+import { htmlTrim } from '@dreamworld/web-util/htmlTrim.js';
 /**
  * It is a HTML5 rich text editor.
  * 
@@ -66,6 +67,7 @@ class DwTextEditor extends LitElement {
           left: 0;
           right: 0;
           background: var(--toolbar-background, #FFF);
+          min-height: var(--toolbar-min-height, 42px);
           z-index: 1;
         }
 
@@ -74,6 +76,9 @@ class DwTextEditor extends LitElement {
         }
 
         .menu-btn{
+          display: flex;
+          justify-content: center;
+          align-items: center;
           padding: 0px;
           width: 32px;
           height: 32px;
@@ -98,6 +103,11 @@ class DwTextEditor extends LitElement {
           flex-basis: 0.000000001px;
           overflow: auto;
           position: relative;
+        }
+
+        .iframe-container {
+          padding: var(--dw-text-editor-iframe-container-padding, 0px);
+          margin: var(--dw-text-editor-iframe-container-margin, 0px);
         }
 
         :host([readonly]) iframe {
@@ -180,6 +190,11 @@ class DwTextEditor extends LitElement {
        * Default scrolling element is iframe content.
        */
       scrollingElement: { type: Object },
+
+      /**
+       * Placeholder of text-editor.
+       */
+      placeholder: { type: String },
 
       /**
        * Current state of Bold menu in toolbar.
@@ -298,6 +313,13 @@ class DwTextEditor extends LitElement {
     this._contentHeightUtilReady;
   }
 
+  update(changedProperties) {
+    if(changedProperties.has('placeholder') || (changedProperties.has('value') && this.value !== this.getValue())) {
+      this.__showHidePlaceholder();
+    }
+    super.update && super.update(changedProperties);
+  }
+
   updated(changedProperties) {
     if (changedProperties.has('readonly')) {
       this._updateReadOnly();
@@ -332,11 +354,11 @@ class DwTextEditor extends LitElement {
   setValue(html) {
     if(!this._editor) {
       //Set `value` property so this value is set by default when iFrame is ready
-      this.value = html;
+      this.value = html || '';
       return;
     }
 
-    this._editor.setHTML(html);
+    this._editor.setHTML(html || '');
     this.refreshHeight();
   }
 
@@ -405,6 +427,35 @@ class DwTextEditor extends LitElement {
   }
 
   /**
+   * When text-editor value is empty then shows a placeholder, otherwise hide a placeholder.
+   * @private
+   */
+  __showHidePlaceholder() {
+    if(!this.content) {
+      return;
+    }
+    
+    if(!this.placeholder) {
+      this.content.removeAttribute('show-placeholder');
+      this.content.removeAttribute('placeholder');
+      return;
+    }
+    
+    const oldPlaceholderText = this.content.getAttribute('placeholder');
+    //If old and new text is not same then only change a placeholder value.
+    if(oldPlaceholderText !== this.placeholder) {
+      this.content.setAttribute('placeholder', this.placeholder);
+    }
+    
+    const alredyShowPlaceholder = this.content.getAttribute('show-placeholder') === 'true';
+    const value = htmlTrim(this.getValue());
+    if((alredyShowPlaceholder && !value) || (!alredyShowPlaceholder && value)) {
+      return;
+    }
+    this.content.setAttribute('show-placeholder', !value ? 'true': 'false');
+  }
+
+  /**
    * @returns {String} user selected value.
    * @public
    */
@@ -412,6 +463,14 @@ class DwTextEditor extends LitElement {
     let doc = this.content.ownerDocument || this.content.document;
     let win = doc.defaultView || doc.parentWindow;
     return win && win.getSelection && win.getSelection().toString() || '';
+  }
+
+  /**
+   * Call this to set focus in the richtext-editor.
+   * @public
+   */
+  focus() {
+    this._editor && this._editor.focus();
   }
 
   _init() {
@@ -429,7 +488,7 @@ class DwTextEditor extends LitElement {
 
     //Set focus if `autoFocus` is true
     if(this.autoFocus) {
-      this._editor.focus();
+      this.focus();
     }
     
     //Initialize dummy text editor for get content height;
@@ -440,6 +499,7 @@ class DwTextEditor extends LitElement {
     this.content.addEventListener('click', this._dispatchBodyTapEvent.bind(this));
     this._editor.addEventListener('pathChange', this._pathChanged.bind(this));
     this._editor.addEventListener('input', this._dispatchValueChange.bind(this));
+    this.__showHidePlaceholder();
   }
 
   /**
@@ -598,6 +658,7 @@ class DwTextEditor extends LitElement {
     if (this.autoHeight) {
       this.refreshHeight();
     }
+    this.__showHidePlaceholder();
   }
 
   /**
