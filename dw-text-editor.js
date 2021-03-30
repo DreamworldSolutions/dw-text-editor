@@ -69,6 +69,8 @@ class DwTextEditor extends LitElement {
           background: var(--toolbar-background, #FFF);
           min-height: var(--toolbar-min-height, 42px);
           z-index: 1;
+          padding: var(--dw-text-editor-toolbar-padding, 0px);
+          margin: var(--dw-text-editor-toolbar-margin, 0px);
         }
 
         :host([readonly]) #toolbar{
