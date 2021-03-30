@@ -359,6 +359,7 @@ class DwTextEditor extends LitElement {
 
     this._editor.setHTML(html || '');
     this.refreshHeight();
+    this.__showHidePlaceholder();
   }
 
   /**
@@ -498,7 +499,6 @@ class DwTextEditor extends LitElement {
     this.content.addEventListener('click', this._dispatchBodyTapEvent.bind(this));
     this._editor.addEventListener('pathChange', this._pathChanged.bind(this));
     this._editor.addEventListener('input', this._dispatchValueChange.bind(this));
-    this.__showHidePlaceholder();
   }
 
   /**
