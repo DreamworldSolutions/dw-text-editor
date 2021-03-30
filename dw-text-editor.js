@@ -313,16 +313,15 @@ class DwTextEditor extends LitElement {
     this._contentHeightUtilReady;
   }
 
-  update(changedProperties) {
+  updated(changedProperties) {
+    super.updated && super.updated(changedProperties);
     if(changedProperties.has('placeholder') || (changedProperties.has('value') && this.value !== this.getValue())) {
       this.__showHidePlaceholder();
     }
-    super.update && super.update(changedProperties);
-  }
 
-  updated(changedProperties) {
     if (changedProperties.has('readonly')) {
       this._updateReadOnly();
+      this.__showHidePlaceholder();
     }
 
     if (changedProperties.has('value') && this.value !== this.getValue()) {
@@ -435,7 +434,7 @@ class DwTextEditor extends LitElement {
       return;
     }
     
-    if(!this.placeholder) {
+    if(!this.placeholder || this.readonly) {
       this.content.removeAttribute('show-placeholder');
       this.content.removeAttribute('placeholder');
       return;
