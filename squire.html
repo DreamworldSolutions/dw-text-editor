@@ -25,6 +25,17 @@
       overflow: auto;
     }
 
+    body::before {
+      display: none;
+      content: attr(placeholder);
+      position: absolute;
+      color: #757575;
+    }
+
+    body[show-placeholder="true"]::before {
+      display: block;
+    }
+
     a {
       text-decoration: underline;
     }
