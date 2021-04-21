@@ -19,6 +19,8 @@ import { htmlTrim } from '@dreamworld/web-util/htmlTrim.js';
  *  - `height-changed`: Fired when `autoHeight` is true and rich content height is changed.
  *      - By defalult it opens link in browser tab when user tap on link. If integrator wants to do something new then prevent this event and do work as you want.
  *  - `body-tap`: Fired when user tap on iFrame body
+ *  - `body-focusin`: Fired when focus is grabbed into content.
+ *  - `body-focusout`: Fired when focus is out from content.
  * 
  * ## CSS Variables: 
  *  - --toolbar-icon-color
@@ -332,6 +334,19 @@ class DwTextEditor extends LitElement {
   }
 
   /**
+    * Called every time the element is removed from the DOM. Useful for 
+    * running clean up code (removing event listeners, etc.).
+    */
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.content && this.content.addEventListener('click', this._dispatchBodyTapEvent);
+    this.content && this.content.addEventListener('focusin', this._dispatchFocusInEvent);
+    this.content && this.content.addEventListener('focusout', this._dispatchFocusOutEvent);
+    this._editor && this._editor.addEventListener('pathChange', this._pathChanged);
+    this._editor && this._editor.addEventListener('input', this._dispatchValueChange);
+  }
+
+  /**
    * Updates `readonly` property.
    * Sets `contenteditable` based on `readonly`.
    */
@@ -498,9 +513,33 @@ class DwTextEditor extends LitElement {
       this._contentHeightUtilReady = true;
     });
 
-    this.content.addEventListener('click', this._dispatchBodyTapEvent.bind(this));
-    this._editor.addEventListener('pathChange', this._pathChanged.bind(this));
-    this._editor.addEventListener('input', this._dispatchValueChange.bind(this));
+    this._dispatchBodyTapEvent = this._dispatchBodyTapEvent.bind(this);
+    this._dispatchFocusInEvent = this._dispatchFocusInEvent.bind(this);
+    this._dispatchFocusOutEvent = this._dispatchFocusOutEvent.bind(this);
+    this._pathChanged = this._pathChanged.bind(this);
+    this._dispatchValueChange = this._dispatchValueChange.bind(this);
+
+    this.content.addEventListener('click', this._dispatchBodyTapEvent);
+    this.content.addEventListener('focusin', this._dispatchFocusInEvent);
+    this.content.addEventListener('focusout', this._dispatchFocusOutEvent);
+    this._editor.addEventListener('pathChange', this._pathChanged);
+    this._editor.addEventListener('input', this._dispatchValueChange);
+  }
+
+  /**
+   * Dispatches `body-focusin` event when focus in into `body`
+   * @param {Object} event Event
+   */
+  _dispatchFocusInEvent(event) {
+    this.dispatchEvent(new CustomEvent('body-focusin', { detail: { event }, bubbles: true, composed: true }));
+  }
+
+  /**
+   * Dispatches `body-focusout` event when focus is out from `body`
+   * @param {Object} event Event
+   */
+  _dispatchFocusOutEvent(event) {
+    this.dispatchEvent(new CustomEvent('body-focusout', { detail: { event }, bubbles: true, composed: true }));
   }
 
   /**
