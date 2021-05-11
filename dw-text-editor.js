@@ -465,7 +465,8 @@ class DwTextEditor extends LitElement {
     }
     
     const alredyShowPlaceholder = this.content.getAttribute('show-placeholder') === 'true';
-    const value = htmlTrim(this.getValue());
+    let value = this.getValue();
+    value = value.includes('</li>') ? value : htmlTrim(value); // When list exists, do not trim value.
     if((alredyShowPlaceholder && !value) || (!alredyShowPlaceholder && value)) {
       return;
     }
