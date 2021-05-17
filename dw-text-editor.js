@@ -4,6 +4,7 @@ import '@dreamworld/dw-icon/dw-icon';
 import { scrollIntoView } from '@dreamworld/web-util/scrollIntoView';
 import * as contentHeightUtil from './content-height-util.js';
 import { htmlTrim } from '@dreamworld/web-util/htmlTrim.js';
+import isEmpty from 'lodash-es/isEmpty';
 /**
  * It is a HTML5 rich text editor.
  * 
@@ -18,9 +19,7 @@ import { htmlTrim } from '@dreamworld/web-util/htmlTrim.js';
  *  - `value-changed`: Fired with final value whenever rich text content is changed
  *  - `height-changed`: Fired when `autoHeight` is true and rich content height is changed.
  *      - By defalult it opens link in browser tab when user tap on link. If integrator wants to do something new then prevent this event and do work as you want.
- *  - `body-tap`: Fired when user tap on iFrame body
- *  - `body-focusin`: Fired when focus is grabbed into content.
- *  - `body-focusout`: Fired when focus is out from content.
+ *  - proxy events which is provided into `proxyEvents` property.
  * 
  * ## CSS Variables: 
  *  - --toolbar-icon-color
@@ -201,6 +200,12 @@ class DwTextEditor extends LitElement {
       placeholder: { type: String },
 
       /**
+       * Input property.
+       * List of comma seperated events to be proxied. e.g "click, focusin, focusout"
+       */
+      proxyEvents: { type: String, attribute: 'proxy-events' },
+
+      /**
        * Current state of Bold menu in toolbar.
        */
       _isBold: {
@@ -331,6 +336,60 @@ class DwTextEditor extends LitElement {
     if (changedProperties.has('value') && this.value !== this.getValue()) {
       this.setValue(this.value);
     }
+
+    if (changedProperties.has('proxyEvents')) {
+      if (this.proxyEvents && changedProperties.get('proxyEvents')) {
+        this.__unlistenProxyEvents();
+        this.__listenProxyEvents();
+        return;
+      }
+
+      if (!this.proxyEvents && changedProperties.get('proxyEvents')) {
+        this.__unlistenProxyEvents();
+        return;
+      }
+    }
+  }
+
+  /**
+   * Adds listeners for proxy events.
+   */
+  __listenProxyEvents() {
+    if (!this.proxyEvents || !this.content) {
+      return;
+    }
+
+    this.__proxyEvents = this.proxyEvents.split(",").map(item => item.trim());
+    for (let event of this.__proxyEvents) {
+      this.content.addEventListener(event, this.__dispatchProxyEvent);
+    }
+  }
+
+  /**
+   * Removes listeners for proxy events.
+   */
+  __unlistenProxyEvents() {
+    if (isEmpty(this.__proxyEvents)) {
+      return;
+    }
+    for (let event of this.__proxyEvents) {
+      this.content.removeEventListener(event, this.__dispatchProxyEvent);
+    }
+  }
+
+  /**
+   * Dispatches proxy events.
+   * @param {String} eventName Event Name
+   * @param {Object} event Event
+   */
+  __dispatchProxyEvent(event) {
+    const eventName = event.type;
+    const bubbles = event.bubbles;
+    const composed = event.composed;
+    this.dispatchEvent(new CustomEvent(eventName, { detail: {event}, bubbles, composed }));
+    if (eventName === 'click') {
+      this._scrollActiveElementIntoView();
+    }
   }
 
   /**
@@ -339,11 +398,9 @@ class DwTextEditor extends LitElement {
     */
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.content && this.content.addEventListener('click', this._dispatchBodyTapEvent);
-    this.content && this.content.addEventListener('focusin', this._dispatchFocusInEvent);
-    this.content && this.content.addEventListener('focusout', this._dispatchFocusOutEvent);
-    this._editor && this._editor.addEventListener('pathChange', this._pathChanged);
-    this._editor && this._editor.addEventListener('input', this._dispatchValueChange);
+    this.__unlistenProxyEvents();
+    this._editor && this._editor.removeEventListener('pathChange', this._pathChanged);
+    this._editor && this._editor.removeEventListener('input', this._dispatchValueChange);
   }
 
   /**
@@ -513,33 +570,13 @@ class DwTextEditor extends LitElement {
       this._contentHeightUtilReady = true;
     });
 
-    this._dispatchBodyTapEvent = this._dispatchBodyTapEvent.bind(this);
-    this._dispatchFocusInEvent = this._dispatchFocusInEvent.bind(this);
-    this._dispatchFocusOutEvent = this._dispatchFocusOutEvent.bind(this);
+    this.__dispatchProxyEvent = this.__dispatchProxyEvent.bind(this);
+    this.__listenProxyEvents();
     this._pathChanged = this._pathChanged.bind(this);
     this._dispatchValueChange = this._dispatchValueChange.bind(this);
 
-    this.content.addEventListener('click', this._dispatchBodyTapEvent);
-    this.content.addEventListener('focusin', this._dispatchFocusInEvent);
-    this.content.addEventListener('focusout', this._dispatchFocusOutEvent);
     this._editor.addEventListener('pathChange', this._pathChanged);
     this._editor.addEventListener('input', this._dispatchValueChange);
-  }
-
-  /**
-   * Dispatches `body-focusin` event when focus in into `body`
-   * @param {Object} event Event
-   */
-  _dispatchFocusInEvent(event) {
-    this.dispatchEvent(new CustomEvent('body-focusin', { detail: { event }, bubbles: true, composed: true }));
-  }
-
-  /**
-   * Dispatches `body-focusout` event when focus is out from `body`
-   * @param {Object} event Event
-   */
-  _dispatchFocusOutEvent(event) {
-    this.dispatchEvent(new CustomEvent('body-focusout', { detail: { event }, bubbles: true, composed: true }));
   }
 
   /**
@@ -710,18 +747,6 @@ class DwTextEditor extends LitElement {
         height
       }
     }));
-  }
-
-  /**
-   * Dispatches `body-tap` event when user tap on body
-   */
-  _dispatchBodyTapEvent(event) {
-    this.dispatchEvent(new CustomEvent('body-tap', {
-      detail: {
-        event
-      }
-    }));
-    this._scrollActiveElementIntoView();
   }
 
   /**

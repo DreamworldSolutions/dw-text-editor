@@ -16,6 +16,7 @@
 - Set `autoHeight` to avoid iframe scroll. In this case iframe has same height as its content always.
 - Set `readOnly` to mark content as read only and hide toolbar action manu.
 - Set `autoFocus` to set focus into iFrame body when iFrame is ready.
+- Set `proxy-events` to proxy events from editor content.
 
 - ```
   <dw-text-editor 
