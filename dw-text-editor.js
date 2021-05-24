@@ -320,6 +320,7 @@ class DwTextEditor extends LitElement {
      * content height util's is ready or not.
      */
     this._contentHeightUtilReady;
+    this.__dispatchProxyEvent = this.__dispatchProxyEvent.bind(this);
   }
 
   updated(changedProperties) {
@@ -369,7 +370,7 @@ class DwTextEditor extends LitElement {
    * Removes listeners for proxy events.
    */
   __unlistenProxyEvents() {
-    if (isEmpty(this.__proxyEvents)) {
+    if (isEmpty(this.__proxyEvents) || !this.content) {
       return;
     }
     for (let event of this.__proxyEvents) {
@@ -571,7 +572,7 @@ class DwTextEditor extends LitElement {
       this._contentHeightUtilReady = true;
     });
 
-    this.__dispatchProxyEvent = this.__dispatchProxyEvent.bind(this);
+    this.__unlistenProxyEvents();
     this.__listenProxyEvents();
     this._pathChanged = this._pathChanged.bind(this);
     this._dispatchValueChange = this._dispatchValueChange.bind(this);
