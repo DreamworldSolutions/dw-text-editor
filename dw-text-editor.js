@@ -22,8 +22,12 @@ import isEmpty from 'lodash-es/isEmpty';
  *  - proxy events which is provided into `proxyEvents` property.
  * 
  * ## CSS Variables: 
- *  - --toolbar-icon-color
- * 
+ *  - `--toolbar-icon-color`
+ *  - `--toolbar-bottom-border`
+ *  - `--toolbar-button-width`
+ *  - `--toolbar-button-height`
+ *  - `--toolbar-button-border-radius` 
+ *  - `--toolbar-button-margin` 
  * ## Future work:
  *  - Make action buttons as disabled until iFrame editor is not ready.
  * 
@@ -58,7 +62,7 @@ class DwTextEditor extends LitElement {
           -ms-flex-wrap: wrap;
           -webkit-flex-wrap: wrap;
           flex-wrap: wrap;
-          border-bottom: 1px solid var(--toolbar-border-color, black);
+          border-bottom: var(--toolbar-bottom-border, 1px solid var(--toolbar-border-color, black));
           position: sticky;
           position: -webkit-sticky;
           position: -moz-sticky;
@@ -83,14 +87,14 @@ class DwTextEditor extends LitElement {
           justify-content: center;
           align-items: center;
           padding: 0px;
-          width: 32px;
-          height: 32px;
+          width: var(--toolbar-button-width, 32px);
+          height: var(--toolbar-button-height, 32px);
           background: transparent;
           box-shadow: none;
           border: 1px solid transparent;
-          border-radius: 4px;
+          border-radius: var(--toolbar-button-border-radius, 4px);
           outline: none;
-          margin: 4px 4px;
+          margin: var(--toolbar-button-margin, 4px);
           cursor: pointer;
         }
 
