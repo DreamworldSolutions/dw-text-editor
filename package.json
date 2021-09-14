@@ -13,7 +13,7 @@
   "author": "Nirmal Baldaniya",
   "license": "MIT",
   "dependencies": {
-    "@dreamworld/dw-icon": "^2.1.1",
+    "@dreamworld/dw-icon": "^2.2.0-upgrade-version.1",
     "@dreamworld/pwa-helpers": "^1.11.1",
     "@dreamworld/web-util": "^1.0.0",
     "@webcomponents/webcomponentsjs": "2.2.10",
