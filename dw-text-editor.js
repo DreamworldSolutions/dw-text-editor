@@ -387,11 +387,11 @@ class DwTextEditor extends LitElement {
    * @param {String} eventName Event Name
    * @param {Object} event Event
    */
-  __dispatchProxyEvent(event) {
-    const eventName = event.type;
-    const bubbles = event.bubbles;
-    const composed = event.composed;
-    this.dispatchEvent(new CustomEvent(eventName, { detail: {event}, bubbles, composed }));
+   __dispatchProxyEvent(e) {
+     const eventName = e.type;
+     // See reference here: https://stackoverflow.com/questions/11974262/how-to-clone-or-re-dispatch-dom-events
+    const proxyEvent = new e.constructor(eventName, e);
+    this.dispatchEvent(proxyEvent);
     if (eventName === 'click') {
       this._scrollActiveElementIntoView();
     }
