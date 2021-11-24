@@ -388,7 +388,8 @@ class DwTextEditor extends LitElement {
    * @param {Object} event Event
    */
    __dispatchProxyEvent(e) {
-    const eventName = e.type;
+     const eventName = e.type;
+     // See reference here: https://stackoverflow.com/questions/11974262/how-to-clone-or-re-dispatch-dom-events
     const proxyEvent = new e.constructor(eventName, e);
     this.dispatchEvent(proxyEvent);
     if (eventName === 'click') {
