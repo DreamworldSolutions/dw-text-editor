@@ -17,6 +17,7 @@
 - Set `readOnly` to mark content as read only and hide toolbar action manu.
 - Set `autoFocus` to set focus into iFrame body when iFrame is ready.
 - Set `proxy-events` to proxy events from editor content.
+  - Note: Original event can be accessed through `e.details.event` e.g `(e) => {const originalEvent = e.details.event}`
 
 - ```
   <dw-text-editor 
