@@ -388,9 +388,11 @@ class DwTextEditor extends LitElement {
    * @param {Object} event Event
    */
    __dispatchProxyEvent(e) {
-    const eventName = e.type;
-    const proxyEvent = new e.constructor(eventName, e);
-    this.dispatchEvent(proxyEvent);
+     const eventName = e.type;
+     // See reference here: https://stackoverflow.com/questions/11974262/how-to-clone-or-re-dispatch-dom-events
+     const proxyEvent = new e.constructor(eventName, e);
+     proxyEvent.details = { event: e };
+     this.dispatchEvent(proxyEvent);
     if (eventName === 'click') {
       this._scrollActiveElementIntoView();
     }
@@ -559,6 +561,7 @@ class DwTextEditor extends LitElement {
     }
     this._iframe = this.shadowRoot.querySelector('iframe');
     this._editor = this._iframe.contentWindow.editor;
+    this._editor.linkRegExp = null;
     this.content = this._iframe.contentDocument.body;
     this.content.style.overflow = 'hidden'; 
     this.scrollingElement = this.scrollingElement || this.content;
