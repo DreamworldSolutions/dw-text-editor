@@ -27,7 +27,11 @@ import isEmpty from 'lodash-es/isEmpty';
  *  - `--toolbar-button-width`
  *  - `--toolbar-button-height`
  *  - `--toolbar-button-border-radius` 
- *  - `--toolbar-button-margin` 
+ *  - `--toolbar-button-margin`
+ *  - `--toolbar-top`
+ *  - `--toolbar-left`
+ *  - `--toolbar-right` 
+ * 
  * ## Future work:
  *  - Make action buttons as disabled until iFrame editor is not ready.
  * 
@@ -68,9 +72,9 @@ class DwTextEditor extends LitElement {
           position: -moz-sticky;
           position: -ms-sticky;
           position: -o-sticky;
-          top: 0;
-          left: 0;
-          right: 0;
+          top: var(--toolbar-top, 0);
+          left: var(--toolbar-left, 0);
+          right: var(--toolbar-right, 0);
           background: var(--toolbar-background, #FFF);
           min-height: var(--toolbar-min-height, 42px);
           z-index: 1;
