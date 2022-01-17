@@ -364,12 +364,12 @@ class DwTextEditor extends LitElement {
    * Adds listeners for proxy events.
    */
   __listenProxyEvents() {
-    if (!this.proxyEvents || !this.content) {
+    if (!this.proxyEvents || typeof this.proxyEvents !== 'string' || !this.content) {
       return;
     }
-
-    this.__proxyEvents = this.proxyEvents.split(",").map(item => item.trim());
-    for (let event of this.__proxyEvents) {
+    let proxyEvents = this.proxyEvents;
+    proxyEvents = proxyEvents.split(",").map(item => item.trim());
+    for (let event of proxyEvents) {
       this.content.addEventListener(event, this.__dispatchProxyEvent);
     }
   }
@@ -378,10 +378,18 @@ class DwTextEditor extends LitElement {
    * Removes listeners for proxy events.
    */
   __unlistenProxyEvents() {
-    if (isEmpty(this.__proxyEvents) || !this.content) {
+    if (!this.proxyEvents || typeof this.proxyEvents !== 'string' || !this.content) {
       return;
     }
-    for (let event of this.__proxyEvents) {
+
+    let proxyEvents = this.proxyEvents;
+    proxyEvents = proxyEvents.split(",").map(item => item.trim());
+
+    if (isEmpty(proxyEvents)) {
+      return;
+    }
+
+    for (let event of proxyEvents) {
       this.content.removeEventListener(event, this.__dispatchProxyEvent);
     }
   }
