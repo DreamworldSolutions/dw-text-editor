@@ -39,7 +39,7 @@ import isEmpty from 'lodash-es/isEmpty';
  *  <dw-text-editor iframePath="/path/to/squire.html" value="<h2>Hello World.</h2>" readonly autoHeight autoFocus></dw-text-editor>
  */
 
-class DwTextEditor extends LitElement {
+export class DwTextEditor extends LitElement {
   static get styles() {
     return [
       css`
