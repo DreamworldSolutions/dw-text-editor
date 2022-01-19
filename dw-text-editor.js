@@ -39,7 +39,7 @@ import isEmpty from 'lodash-es/isEmpty';
  *  <dw-text-editor iframePath="/path/to/squire.html" value="<h2>Hello World.</h2>" readonly autoHeight autoFocus></dw-text-editor>
  */
 
-class DwTextEditor extends LitElement {
+export class DwTextEditor extends LitElement {
   static get styles() {
     return [
       css`
@@ -364,12 +364,12 @@ class DwTextEditor extends LitElement {
    * Adds listeners for proxy events.
    */
   __listenProxyEvents() {
-    if (!this.proxyEvents || !this.content) {
+    if (!this.proxyEvents || typeof this.proxyEvents !== 'string' || !this.content) {
       return;
     }
-
-    this.__proxyEvents = this.proxyEvents.split(",").map(item => item.trim());
-    for (let event of this.__proxyEvents) {
+    let proxyEvents = this.proxyEvents;
+    proxyEvents = proxyEvents.split(",").map(item => item.trim());
+    for (let event of proxyEvents) {
       this.content.addEventListener(event, this.__dispatchProxyEvent);
     }
   }
@@ -378,10 +378,18 @@ class DwTextEditor extends LitElement {
    * Removes listeners for proxy events.
    */
   __unlistenProxyEvents() {
-    if (isEmpty(this.__proxyEvents) || !this.content) {
+    if (!this.proxyEvents || typeof this.proxyEvents !== 'string' || !this.content) {
       return;
     }
-    for (let event of this.__proxyEvents) {
+
+    let proxyEvents = this.proxyEvents;
+    proxyEvents = proxyEvents.split(",").map(item => item.trim());
+
+    if (isEmpty(proxyEvents)) {
+      return;
+    }
+
+    for (let event of proxyEvents) {
       this.content.removeEventListener(event, this.__dispatchProxyEvent);
     }
   }
