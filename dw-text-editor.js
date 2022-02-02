@@ -575,6 +575,10 @@ export class DwTextEditor extends LitElement {
     this._editor = this._iframe.contentWindow.editor;
     this._editor.linkRegExp = null;
     this.content = this._iframe.contentDocument.body;
+
+    this.__unlistenProxyEvents();
+    this.__listenProxyEvents();
+    
     this.content.style.overflow = 'hidden'; 
     this.scrollingElement = this.scrollingElement || this.content;
     this._updateReadOnly();
@@ -590,8 +594,6 @@ export class DwTextEditor extends LitElement {
       this._contentHeightUtilReady = true;
     });
 
-    this.__unlistenProxyEvents();
-    this.__listenProxyEvents();
     this._pathChanged = this._pathChanged.bind(this);
     this._dispatchValueChange = this._dispatchValueChange.bind(this);
 
