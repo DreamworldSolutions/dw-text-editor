@@ -7,35 +7,35 @@ import { htmlTrim } from '@dreamworld/web-util/htmlTrim.js';
 import isEmpty from 'lodash-es/isEmpty';
 /**
  * It is a HTML5 rich text editor.
- * 
- * ## TOOLBAR : 
- *    Bold : 
+ *
+ * ## TOOLBAR :
+ *    Bold :
  *    Italic :
  *    Underline :
  *    Number :
- *    Bullet : 
- * 
+ *    Bullet :
+ *
  * ## Events
  *  - `value-changed`: Fired with final value whenever rich text content is changed
  *  - `height-changed`: Fired when `autoHeight` is true and rich content height is changed.
  *      - By defalult it opens link in browser tab when user tap on link. If integrator wants to do something new then prevent this event and do work as you want.
  *  - proxy events which is provided into `proxyEvents` property.
- * 
- * ## CSS Variables: 
+ *
+ * ## CSS Variables:
  *  - `--toolbar-icon-color`
  *  - `--toolbar-bottom-border`
  *  - `--toolbar-button-width`
  *  - `--toolbar-button-height`
- *  - `--toolbar-button-border-radius` 
+ *  - `--toolbar-button-border-radius`
  *  - `--toolbar-button-margin`
  *  - `--toolbar-top`
  *  - `--toolbar-left`
- *  - `--toolbar-right` 
- * 
+ *  - `--toolbar-right`
+ *
  * ## Future work:
  *  - Make action buttons as disabled until iFrame editor is not ready.
- * 
- * ## USAGE PATTERN: 
+ *
+ * ## USAGE PATTERN:
  *  <dw-text-editor iframePath="/path/to/squire.html" value="<h2>Hello World.</h2>" readonly autoHeight autoFocus></dw-text-editor>
  */
 
@@ -121,11 +121,8 @@ export class DwTextEditor extends LitElement {
           margin: var(--dw-text-editor-iframe-container-margin, 0px);
         }
 
-        :host([readonly]) iframe {
+        iframe {
           display: block;
-        }
-
-        iframe{
           width: 100%;
           height: 98%; /* Actually 100% should be worked but doesn't works. Need to find cause. */
           border: none;
@@ -166,7 +163,7 @@ export class DwTextEditor extends LitElement {
       },
 
       /**
-       * Hides/Shows toolbar & makes editor editable / non-editable. 
+       * Hides/Shows toolbar & makes editor editable / non-editable.
        */
       readonly: {
         type: Boolean,
@@ -183,7 +180,7 @@ export class DwTextEditor extends LitElement {
       },
 
       /**
-       * Input property. 
+       * Input property.
        * Editor's minimum height. Default is 150;
        */
       minHeight: { type: Number },
@@ -260,49 +257,49 @@ export class DwTextEditor extends LitElement {
   render() {
     return html`
       <div id="toolbar">
-        <button 
-          class="menu-btn" 
-          title="Bold" 
+        <button
+          class="menu-btn"
+          title="Bold"
           ?active="${this._isBold}"
           @click="${this._updateBold}">
           <dw-icon name="format_bold"></dw-icon>
         </button>
 
-        <button 
-          class="menu-btn" 
-          title="Italic" 
+        <button
+          class="menu-btn"
+          title="Italic"
           ?active="${this._isItalic}"
           @click="${this._updateItalic}">
           <dw-icon name="format_italic"></dw-icon>
         </button>
 
-        <button 
-          class="menu-btn" 
-          title="Underline" 
+        <button
+          class="menu-btn"
+          title="Underline"
           ?active="${this._isUnderlined}"
           @click="${this._updateUnderlined}">
           <dw-icon name="format_underlined"></dw-icon>
         </button>
 
-        <button 
-          class="menu-btn" 
-          title="Strikethrough" 
+        <button
+          class="menu-btn"
+          title="Strikethrough"
           ?active="${this._isStrikethrough}"
           @click="${this._updateStrikethrough}">
           <dw-icon name="format_strikethrough"></dw-icon>
         </button>
 
-        <button 
-          class="menu-btn" 
-          title="Ordered List" 
+        <button
+          class="menu-btn"
+          title="Ordered List"
           ?active="${this._isOrderedList}"
           @click="${this._updateOrdredList}">
           <dw-icon name="format_list_numbered"></dw-icon>
         </button>
 
-        <button 
-          class="menu-btn" 
-          title="Unordered List" 
+        <button
+          class="menu-btn"
+          title="Unordered List"
           ?active="${this._isUnorderedList}"
           @click="${this._updateUnoredredList}">
           <dw-icon name="format_list_bulleted"></dw-icon>
@@ -310,9 +307,9 @@ export class DwTextEditor extends LitElement {
       </div>
 
       <div class="iframe-container">
-        <iframe 
+        <iframe
           @load="${this._init}"
-          src="${this.iframePath}"></iframe> 
+          src="${this.iframePath}"></iframe>
       </div>
     `;
   }
@@ -411,7 +408,7 @@ export class DwTextEditor extends LitElement {
   }
 
   /**
-    * Called every time the element is removed from the DOM. Useful for 
+    * Called every time the element is removed from the DOM. Useful for
     * running clean up code (removing event listeners, etc.).
     */
   disconnectedCallback() {
@@ -438,9 +435,9 @@ export class DwTextEditor extends LitElement {
   }
 
   /**
-   * Sets the HTML value for the editor. 
+   * Sets the HTML value for the editor.
    * The value supplied should not contain <body> tags or anything outside of that.
-   * @param {*} html 
+   * @param {*} html
    */
   setValue(html) {
     if(!this._editor) {
@@ -455,7 +452,7 @@ export class DwTextEditor extends LitElement {
   }
 
   /**
-   * Returns the HTML value of the editor in its current state. 
+   * Returns the HTML value of the editor in its current state.
    * This value is equivalent to the contents of the <body> tag.
    */
   getValue() {
@@ -526,19 +523,19 @@ export class DwTextEditor extends LitElement {
     if(!this.content) {
       return;
     }
-    
+
     if(!this.placeholder || this.readonly) {
       this.content.removeAttribute('show-placeholder');
       this.content.removeAttribute('placeholder');
       return;
     }
-    
+
     const oldPlaceholderText = this.content.getAttribute('placeholder');
     //If old and new text is not same then only change a placeholder value.
     if(oldPlaceholderText !== this.placeholder) {
       this.content.setAttribute('placeholder', this.placeholder);
     }
-    
+
     const alredyShowPlaceholder = this.content.getAttribute('show-placeholder') === 'true';
     let value = this.getValue();
     value = value.includes('</li>') ? value : htmlTrim(value); // When list exists, do not trim value.
@@ -578,8 +575,8 @@ export class DwTextEditor extends LitElement {
 
     this.__unlistenProxyEvents();
     this.__listenProxyEvents();
-    
-    this.content.style.overflow = 'hidden'; 
+
+    this.content.style.overflow = 'hidden';
     this.scrollingElement = this.scrollingElement || this.content;
     this._updateReadOnly();
     this.setValue(this.value);
@@ -588,7 +585,7 @@ export class DwTextEditor extends LitElement {
     if(this.autoFocus) {
       this.focus();
     }
-    
+
     //Initialize dummy text editor for get content height;
     contentHeightUtil.init(this.iframePath).then(() => {
       this._contentHeightUtilReady = true;
