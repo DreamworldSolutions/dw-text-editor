@@ -4,7 +4,8 @@
   "description": "A light-weight Rich Text Editor based on Squire, built as LitElement WebComponent",
   "main": "dw-text-editor.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "wds --node-resolve --app-index demo/index.html --open --watch"
   },
   "repository": {
     "type": "git",
@@ -13,23 +14,20 @@
   "author": "Nirmal Baldaniya",
   "license": "MIT",
   "dependencies": {
-    "@dreamworld/dw-icon": "^2.1.0",
-    "@dreamworld/pwa-helpers": "^1.8.0",
+    "@dreamworld/dw-icon": "https://github.com/DreamworldSolutions/dw-icon.git#feature/upgrade-to-lit",
+    "@dreamworld/pwa-helpers": "^1.13.1",
     "@dreamworld/web-util": "^1.0.0",
     "@webcomponents/webcomponentsjs": "2.2.10",
-    "lit-element": "2.2.1",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
+    "@web/dev-server": "^0.1.34",
     "semantic-release": "17.0.8"
   },
   "publishConfig": {
     "access": "public"
   },
-  "resolutions": {
-    "lit-element": "2.3.1",
-    "lit-html": "1.2.1"
-  },
+  "resolutions": {},
   "release": {
     "branches": [
       "+([0-9])?(.{+([0-9]),x}).x",
