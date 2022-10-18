@@ -1,5 +1,4 @@
-import { html, css } from 'lit-element';
-import { LitElement } from '@dreamworld/pwa-helpers/lit-element.js';
+import { LitElement, html, css } from '@dreamworld/pwa-helpers/lit.js';
 import '@dreamworld/dw-icon/dw-icon';
 import { scrollIntoView } from '@dreamworld/web-util/scrollIntoView';
 import * as contentHeightUtil from './content-height-util.js';
