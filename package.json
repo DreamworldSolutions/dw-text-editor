@@ -14,7 +14,7 @@
   "author": "Nirmal Baldaniya",
   "license": "MIT",
   "dependencies": {
-    "@dreamworld/dw-icon": "https://github.com/DreamworldSolutions/dw-icon.git#feature/upgrade-to-lit",
+    "@dreamworld/dw-icon": "^4.0.0",
     "@dreamworld/pwa-helpers": "^1.13.1",
     "@dreamworld/web-util": "^1.0.0",
     "@webcomponents/webcomponentsjs": "2.2.10",

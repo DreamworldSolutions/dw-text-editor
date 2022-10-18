@@ -23,12 +23,13 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@dreamworld/dw-icon@https://github.com/DreamworldSolutions/dw-icon.git#feature/upgrade-to-lit":
-  version "0.0.0-development"
-  resolved "https://github.com/DreamworldSolutions/dw-icon.git#81e0249a4ad628978c18dcae945f470aff44ea5e"
+"@dreamworld/dw-icon@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@dreamworld/dw-icon/-/dw-icon-4.0.0.tgz#c43a3d3ef92c0d80744a6d2d4a08f0d647af142d"
+  integrity sha512-pWEZu9Fkp+YYSIQ58WNJQ1iJvXQmS1Mvtz1a+AOxWPAS47TWU//SE7yV1cenOAd+Kw44IOkdlzuDbKZiw58VdA==
   dependencies:
     "@dreamworld/pwa-helpers" "^1.13.1"
-    "@material/mwc-icon" "^0.27.0"
+    "@material/mwc-icon" "0.27.0"
 
 "@dreamworld/pwa-helpers@^1.13.1":
   version "1.13.1"
@@ -60,7 +61,7 @@
   resolved "https://registry.yarnpkg.com/@lit/reactive-element/-/reactive-element-1.4.1.tgz#3f587eec5708692135bc9e94cf396130604979f3"
   integrity sha512-qDv4851VFSaBWzpS02cXHclo40jsbAjRXnebNXpm0uVg32kCneZPo9RYVQtrTNICtZ+1wAYHu1ZtxWSWMbKrBw==
 
-"@material/mwc-icon@^0.27.0":
+"@material/mwc-icon@0.27.0":
   version "0.27.0"
   resolved "https://registry.yarnpkg.com/@material/mwc-icon/-/mwc-icon-0.27.0.tgz#f25ecdd7fe54d810d7d655ba05251169f78b84fd"
   integrity sha512-Sul44I37M9Ewynn0A9DjkEBrmll2VtNbth6Pxj7I1A/EAwEfaCrPvryyGqfIu1T2hTsRcaojzQx6QjF+B5QW9A==
