@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "@dreamworld/dw-icon": "^4.0.0",
-    "@dreamworld/pwa-helpers": "^1.13.1",
+    "@dreamworld/pwa-helpers": "^3.0.2",
     "@dreamworld/web-util": "^1.0.0",
     "@webcomponents/webcomponentsjs": "2.2.10",
     "lodash-es": "^4.17.15"
