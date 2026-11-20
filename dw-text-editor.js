@@ -1,6 +1,5 @@
 import { LitElement, html, css } from '@dreamworld/pwa-helpers/lit.js';
 import '@dreamworld/dw-icon/dw-icon';
-import { scrollIntoView } from '@dreamworld/web-util/scrollIntoView';
 import * as contentHeightUtil from './content-height-util.js';
 import { htmlTrim } from '@dreamworld/web-util/htmlTrim.js';
 import isEmpty from 'lodash-es/isEmpty';
@@ -537,7 +536,21 @@ export class DwTextEditor extends LitElement {
 
     const alredyShowPlaceholder = this.content.getAttribute('show-placeholder') === 'true';
     let value = this.getValue();
-    value = value.includes('</li>') ? value : htmlTrim(value); // When list exists, do not trim value.
+
+    // Check if there's any actual content (including spaces)
+    let hasAnyContent = this.content.textContent && this.content.textContent.length > 0;
+
+    // When list or tab-indent exists, do not trim value.
+    if (value.includes('</li>') || value.includes('data-tab-indent')) {
+      // Don't trim - preserve list or tab-indent content
+    } else if (hasAnyContent) {
+      // Has some content - use it as-is to detect even single spaces
+      value = this.content.textContent;
+    } else {
+      // No content at all
+      value = '';
+    }
+
     if((alredyShowPlaceholder && !value) || (!alredyShowPlaceholder && value)) {
       return;
     }
@@ -595,6 +608,12 @@ export class DwTextEditor extends LitElement {
 
     this._editor.addEventListener('pathChange', this._pathChanged);
     this._editor.addEventListener('input', this._dispatchValueChange);
+    this.dispatchEvent(new CustomEvent('initialization-completed', {
+      detail: {
+        content: this.content,
+        editor: this._editor
+      }
+    }));
   }
 
   /**
@@ -773,9 +792,32 @@ export class DwTextEditor extends LitElement {
   _scrollActiveElementIntoView() {
     const doc = this.content.ownerDocument || this.content.document;
     const win = doc.defaultView || doc.parentWindow;
-    const focusNode = win.getSelection().focusNode;
-    if (focusNode && focusNode.nodeType == 1 && focusNode !== this.content) {
-      scrollIntoView(this.scrollingElement, focusNode);
+    const selection = win.getSelection();
+
+    if (!selection || selection.rangeCount === 0) {
+      return;
+    }
+
+    const focusNode = selection.focusNode;
+
+    if (!focusNode || focusNode === this.content) {
+      return;
+    }
+
+    // Get the element to scroll into view
+    // If focusNode is a text node, use its parent element
+    const elementToScroll = focusNode.nodeType === Node.TEXT_NODE
+      ? focusNode.parentElement
+      : focusNode;
+
+    if (elementToScroll && elementToScroll !== this.content) {
+      // Use browser's native scrollIntoView
+      // block: 'nearest' avoids unnecessary scrolling if already visible
+      elementToScroll.scrollIntoView({
+        behavior: 'auto',
+        block: 'nearest',
+        inline: 'nearest'
+      });
     }
   }
 }
