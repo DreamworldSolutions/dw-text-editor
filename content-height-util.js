@@ -95,7 +95,8 @@ export const getContentHeight = (html, readonly, width, height = 24) => {
   }
 
   if (!textEditor) {
-    throw new Error("textEditor isn't yet initialized. Please invoked `init()` before this.");
+    console.warn("textEditor isn't yet initialized. Please invoked `init()` before this.");
+    return 0;
   }
 
   if (!width) {
